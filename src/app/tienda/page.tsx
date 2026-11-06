@@ -40,12 +40,12 @@ export default async function Tienda({ searchParams }: { searchParams: Promise<S
       <div className="shop">
         <aside className="filters" aria-label="Filtros">
           <h3>Área</h3>
-          <Link className={!sp.area ? "on" : ""} href={href({ area: undefined, cat: undefined })}>Todas</Link>
-          <Link className={sp.area === "clinica" ? "on" : ""} href={href({ area: "clinica", cat: undefined })}>Clínica</Link>
-          <Link className={sp.area === "educativa" ? "on" : ""} href={href({ area: "educativa", cat: undefined })}>Educativa</Link>
-          <h3>Tema</h3>
-          {categories.filter((c) => !sp.area || c.area === sp.area).map((c) => (
-            <Link key={c.slug} className={sp.cat === c.slug ? "on" : ""} href={href({ area: c.area, cat: c.slug })}>{c.name}</Link>
+          <Link className={!sp.area ? "on" : ""} href={href({ area: undefined })}>Todas</Link>
+          <Link className={sp.area === "clinica" ? "on" : ""} href={href({ area: "clinica" })}>Clínica</Link>
+          <Link className={sp.area === "educativa" ? "on" : ""} href={href({ area: "educativa" })}>Educativa</Link>
+          <h3>Tipo de terapia</h3>
+          {categories.map((c) => (
+            <Link key={c.slug} className={sp.cat === c.slug ? "on" : ""} href={href({ cat: sp.cat === c.slug ? undefined : c.slug })}>{c.name}</Link>
           ))}
           <h3>Precio</h3>
           <Link className={sp.gratis === "1" ? "on" : ""} href={href({ gratis: sp.gratis === "1" ? undefined : "1" })}>Solo gratis</Link>

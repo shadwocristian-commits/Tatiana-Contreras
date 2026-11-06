@@ -29,6 +29,6 @@ export type Review = {
   created_at: string;
 };
 
-export type Category = { slug: string; name: string; area: Area };
+export type Category = { slug: string; name: string; area?: Area | null };
 
 export const AREA_LABEL: Record<Area, string> = { clinica: "Clínica", educativa: "Educativa" };

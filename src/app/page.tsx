@@ -23,7 +23,7 @@ export default async function Home() {
           <p className="lead">Fichas, tarjetas y guías creadas por una psicóloga. Descarga, imprime y úsalas hoy.</p>
           <form className="searchbar" action="/tienda" role="search">
             <label htmlFor="q" style={{ position: "absolute", left: -9999 }}>Buscar materiales</label>
-            <input id="q" name="q" placeholder="Busca: ansiedad, emociones, atención…" />
+            <input id="q" name="q" placeholder="Busca: lenguaje, atención, conducta…" />
             <button className="btn btn-pri" style={{ minHeight: 44 }}>Buscar</button>
           </form>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>

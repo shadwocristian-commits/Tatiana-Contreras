@@ -7,13 +7,20 @@ import type { Category } from "@/lib/types";
 export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; loggedIn: boolean; admin: boolean }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
-  const col = (area: "clinica" | "educativa", title: string) => (
+  const terapias = (
     <div className="mega-col">
-      <h3>{title}</h3>
-      {cats.filter((c) => c.area === area).map((c) => (
-        <Link key={c.slug} className="mi" href={`/tienda?area=${area}&cat=${c.slug}`} onClick={close}>{c.name}</Link>
+      <h3>Tipo de terapia</h3>
+      {cats.map((c) => (
+        <Link key={c.slug} className="mi" href={`/tienda?cat=${c.slug}`} onClick={close}>{c.name}</Link>
       ))}
-      <Link className="mi" href={`/tienda?area=${area}`} onClick={close} style={{ fontWeight: 800 }}>Ver todo</Link>
+      <Link className="mi" href="/tienda" onClick={close} style={{ fontWeight: 800 }}>Ver todo</Link>
+    </div>
+  );
+  const areas = (
+    <div className="mega-col">
+      <h3>Área</h3>
+      <Link className="mi" href="/tienda?area=clinica" onClick={close}>Clínica</Link>
+      <Link className="mi" href="/tienda?area=educativa" onClick={close}>Educativa</Link>
     </div>
   );
   return (
@@ -42,8 +49,8 @@ export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; l
       {open && (
         <div id="mega" className="mega">
           <div className="wrap mega-in">
-            {col("clinica", "Clínica")}
-            {col("educativa", "Educativa")}
+            {terapias}
+            {areas}
             <div className="mega-promo">
               <h3 style={{ fontSize: 24 }}>Materiales gratis</h3>
               <span style={{ fontSize: 14 }}>Descarga y prueba los materiales sin costo.</span>
