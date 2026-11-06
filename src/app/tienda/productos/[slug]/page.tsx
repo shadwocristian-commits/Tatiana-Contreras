@@ -43,8 +43,8 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
     <div className="wrap">
       <div style={{ padding: "28px 0 0", fontSize: 14 }}><Link href="/">Inicio</Link> / <Link href="/tienda">Tienda</Link> / <b>{p.title}</b></div>
       <div className="pd">
-        <div className="pd-img">
-          {p.cover_url ? <img src={p.cover_url} alt={p.title} style={{ width: "100%", borderRadius: 16 }} /> : <div className="thumb w0" style={{ minHeight: 360 }} />}
+        <div className="pd-cover" style={{ flex: "1 1 520px" }}>
+          {p.cover_url ? <img src={p.cover_url} alt={p.title} /> : <div className="thumb w0" style={{ minHeight: 520, height: "100%" }} />}
         </div>
         <div className="pd-info">
           <span className="tag">{p.area === "clinica" ? "Clínica" : "Educativa"}{p.is_sample ? " · Ejemplo" : ""}</span>
@@ -65,10 +65,15 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
           ) : (
             <div className="msg">Los pagos se activarán pronto.</div>
           )}
-          <p style={{ lineHeight: 1.7, whiteSpace: "pre-line" }}>{p.description}</p>
+          <p style={{ lineHeight: 1.7, whiteSpace: "pre-line", margin: 0 }}>{p.description}</p>
+          <div className="facts">
+            <div className="fact" style={{ background: "var(--sage-l)" }}><b>{p.format || "PDF"}</b><span>imprimible A4</span></div>
+            <div className="fact" style={{ background: "var(--honey-l)" }}><b>{p.age_range ?? "Todas"}</b><span>edades</span></div>
+            <div className="fact" style={{ background: "#DDEEF6" }}><b>{p.area === "clinica" ? "Clínica" : "Educativa"}</b><span>área</span></div>
+          </div>
           {p.includes?.length > 0 && (<><h3>Qué incluye</h3><ul>{p.includes.map((x, i) => <li key={i}>{x}</li>)}</ul></>)}
           {p.how_to_use?.length > 0 && (<><h3>Cómo usarlo</h3><ol>{p.how_to_use.map((x, i) => <li key={i}>{x}</li>)}</ol></>)}
-          <p style={{ fontSize: 14 }}>{p.format}{p.age_range ? ` · ${p.age_range}` : ""} · Uso personal, sin reventa.</p>
+          <p style={{ fontSize: 14, margin: 0 }}>Uso personal o profesional propio, sin reventa.</p>
         </div>
       </div>
 
