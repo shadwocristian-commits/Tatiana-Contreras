@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Icon } from "@/components/Icons";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = { title: "Mis materiales" };
@@ -7,7 +8,8 @@ export const dynamic = "force-dynamic";
 
 type Row = { id: string; products: { id: string; slug: string; title: string; format: string | null } | null; orders: { created_at: string } | null };
 
-export default async function MisCompras() {
+export default async function MisCompras({ searchParams }: { searchParams: Promise<{ aviso?: string }> }) {
+  const { aviso } = await searchParams;
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) redirect("/ingresar?next=/cuenta/mis-compras");
@@ -20,6 +22,7 @@ export default async function MisCompras() {
   return (
     <div className="wrap" style={{ padding: "28px 28px 56px" }}>
       <h1 style={{ fontSize: 44 }}>Mis materiales</h1>
+      {aviso && <div className="msg msg-err" role="alert" style={{ marginTop: 14 }}><Icon n="info" />{aviso.slice(0, 160)}</div>}
       {rows.length === 0 ? (
         <div className="box">Aún no tienes materiales. <Link href="/tienda" style={{ fontWeight: 800 }}>Explorar la tienda</Link></div>
       ) : (
