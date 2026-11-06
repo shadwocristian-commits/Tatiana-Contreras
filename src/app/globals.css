@@ -174,3 +174,4 @@ main:has(>.auth){display:flex}
 .af-chk{display:flex;gap:10px;align-items:center;font-weight:700}.af-chk input{width:20px;height:20px;accent-color:var(--honey)}
 @media (max-width:900px){.adm{grid-template-columns:1fr}.adm-s{flex-direction:row;overflow-x:auto;border-right:0}.adm-k{grid-template-columns:repeat(2,minmax(0,1fr))}.adm-2{grid-template-columns:1fr}.adm-m{padding:20px 16px}}
 @media (max-width:860px){.grid3,.trust,.tiles{grid-template-columns:1fr}.steps,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ftr-grid{grid-template-columns:1fr}.hero{gap:32px;padding-top:32px}.filters{flex:1 1 100%}.wrap{padding:0 18px}}
+.pd-info>.tag{align-self:flex-start}
