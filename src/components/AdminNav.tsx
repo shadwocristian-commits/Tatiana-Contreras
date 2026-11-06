@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Icon } from "./Icons";
 
 const items = [
-  { href: "/admin", label: "Resumen" },
-  { href: "/admin/materiales", label: "Materiales" },
-  { href: "/admin/opiniones", label: "Opiniones" },
-  { href: "/admin/usuarios", label: "Usuarios" },
+  { href: "/admin", label: "Resumen", ico: "dashboard" },
+  { href: "/admin/materiales", label: "Materiales", ico: "inventory_2" },
+  { href: "/admin/opiniones", label: "Opiniones", ico: "reviews" },
+  { href: "/admin/usuarios", label: "Usuarios", ico: "group" },
 ];
 
 export default function AdminNav({ pending }: { pending: number }) {
@@ -17,11 +18,11 @@ export default function AdminNav({ pending }: { pending: number }) {
       <b>Panel Tatiana</b>
       {items.map((i) => (
         <Link key={i.href} href={i.href} className={on(i.href) ? "on" : ""}>
-          {i.label}{i.href === "/admin/opiniones" && pending > 0 ? <em className="adm-badge">{pending}</em> : null}
+          <span className="adm-l"><Icon n={i.ico} />{i.label}</span>{i.href === "/admin/opiniones" && pending > 0 ? <em className="adm-badge">{pending}</em> : null}
         </Link>
       ))}
-      <span className="off">Pagos (apagado)</span>
-      <Link href="/tienda" style={{ marginTop: "auto" }}>← Ver tienda</Link>
+      <span className="off"><span className="adm-l"><Icon n="payments" />Pagos (apagado)</span></span>
+      <Link href="/tienda" style={{ marginTop: "auto" }}><span className="adm-l"><Icon n="arrow_back" />Ver tienda</span></Link>
     </aside>
   );
 }

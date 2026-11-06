@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import NavMenu from "./NavMenu";
 import BottomNav from "./BottomNav";
+import { Icon } from "./Icons";
 import type { Category } from "@/lib/types";
 
 export default async function Header() {
@@ -17,7 +18,7 @@ export default async function Header() {
   const { data: cats } = await sb.from("categories").select("slug,name,area").order("sort");
   return (
     <>
-      <div className="promo">Descarga inmediata<span className="hide-m"> · Materiales para terapia clínica y educativa</span></div>
+      <div className="promo"><Icon n="bolt" />Descarga inmediata<span className="hide-m"> · Materiales para terapia clínica y educativa</span></div>
       <header className="hdr" style={{ position: "sticky" }}>
         <div className="wrap hdr-in" style={{ position: "relative" }}>
           <Link href="/" className="brand"><img src="/images/logo.png" alt="Logo Materiales de Tatiana" /><span>Materiales de Tatiana</span></Link>

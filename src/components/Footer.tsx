@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "./Icons";
 
 export default function Footer() {
   return (
@@ -11,16 +12,16 @@ export default function Footer() {
           </div>
           <div>
             <h3>Tienda</h3>
-            <Link href="/tienda">Todos los materiales</Link>
-            <Link href="/tienda?area=clinica">Clínica</Link>
-            <Link href="/tienda?area=educativa">Educativa</Link>
-            <Link href="/tienda?gratis=1">Gratis</Link>
+            <Link href="/tienda"><Icon n="grid_view" />Todos los materiales</Link>
+            <Link href="/tienda?area=clinica"><Icon n="psychology" />Clínica</Link>
+            <Link href="/tienda?area=educativa"><Icon n="school" />Educativa</Link>
+            <Link href="/tienda?gratis=1"><Icon n="redeem" />Gratis</Link>
           </div>
           <div>
             <h3>Información</h3>
-            <Link href="/#guia">Cómo funciona</Link>
-            <Link href="/info/terminos">Términos y condiciones</Link>
-            <Link href="/info/privacidad">Política de privacidad</Link>
+            <Link href="/#guia"><Icon n="help" />Cómo funciona</Link>
+            <Link href="/info/terminos"><Icon n="gavel" />Términos y condiciones</Link>
+            <Link href="/info/privacidad"><Icon n="lock" />Política de privacidad</Link>
           </div>
         </div>
         <p className="aviso">

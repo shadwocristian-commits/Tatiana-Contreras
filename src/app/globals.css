@@ -263,3 +263,23 @@ main:has(>.auth){display:flex}
  .ftr a,.filters a,.mi,.anchors a,.toc a,.legal-b a{display:inline-flex;align-items:center;min-height:44px}
  .ftr .ftr-grid a,.filters a,.toc a{display:flex}
 }
+
+/* Íconos de línea (opción A) */
+.ms{font-family:'Material Symbols Rounded';font-weight:500;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;direction:ltr;font-variation-settings:'FILL' 0,'wght' 500,'opsz' 24;-webkit-font-smoothing:antialiased;flex:none;user-select:none}
+.promo{display:flex;align-items:center;justify-content:center;gap:6px}.promo .ms{font-size:18px}
+.navb{gap:7px}.navb .ms{font-size:19px;color:var(--cacao)}.navb[aria-expanded=true] .ms{color:#fff}
+.mi{display:flex;align-items:center;gap:8px}
+.acct summary .ms{font-size:20px}
+.acct-pop a,.acct-pop .out{display:flex!important;align-items:center;gap:10px}.acct-pop .ms{color:var(--cacao)}.acct-pop .out .ms{color:var(--danger)}
+.pill .ms{font-size:17px;margin-right:6px;color:var(--cacao)}
+.tile .ic .ms{font-size:34px;color:var(--cacao)}
+.step b.n .ms{font-size:20px}
+.stats>div{display:flex;flex-direction:column;align-items:center;gap:4px}.stats>div .ms{font-size:30px;color:var(--cacao)}
+.box .bx{width:48px;height:48px;border-radius:50%;background:var(--sage-l);display:grid;place-items:center;margin-bottom:12px}.box .bx .ms{font-size:26px;color:var(--cacao)}
+.fact i .ms{font-size:26px;color:var(--cacao)}
+.auth-g ol{list-style:none;padding:0}.auth-g li{display:flex;align-items:center;gap:10px}.auth-g li .ms{background:#fff;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;font-size:20px;color:var(--cacao)}
+.ftr a{display:flex;align-items:center;gap:8px}.ftr a .ms{font-size:18px}
+.msg{display:flex;align-items:center;gap:8px}.msg .ms{font-size:20px}
+.adm-s a,.adm-s span.off{justify-content:space-between}.adm-l{display:flex;align-items:center;gap:10px;padding:0!important}.adm-l .ms{font-size:21px}.adm-s a.on .ms{color:#fff}
+.btab a .ms{font-size:25px}.btab a.on .ms{font-variation-settings:'FILL' 1,'wght' 500,'opsz' 24}
+.step b.n .ms{color:#fff;font-size:19px}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Turnstile from "./Turnstile";
+import { Icon } from "./Icons";
 
 export default function AccessCard({ initial = "ingresar", next = "/tienda" }: { initial?: "ingresar" | "registro"; next?: string }) {
   const router = useRouter();
@@ -76,8 +77,8 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
           </label>
         )}
         <Turnstile onToken={setToken} />
-        {error && <div className="msg msg-err" role="alert">{error}</div>}
-        {ok && <div className="msg msg-ok" role="status">{ok}</div>}
+        {error && <div className="msg msg-err" role="alert"><Icon n="error" />{error}</div>}
+        {ok && <div className="msg msg-ok" role="status"><Icon n="check_circle" />{ok}</div>}
         <button className="btn btn-pri" type="submit" disabled={busy}>{busy ? "Un momento…" : mode === "ingresar" ? "Ingresar" : "Crear cuenta"}</button>
       </form>
       {process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" && (
