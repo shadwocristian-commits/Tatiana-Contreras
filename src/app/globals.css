@@ -285,3 +285,10 @@ main:has(>.auth){display:flex}
 .step b.n .ms{color:#fff;font-size:19px}
 .adm-s a.on .adm-l,.adm-s a.on .adm-l .ms{color:#fff}
 .adm-s a:hover .adm-l{color:var(--ink)}.adm-s a.on:hover{background:var(--cacao)}.adm-s a.on:hover .adm-l,.adm-s a.on:hover .ms{color:#fff}
+
+/* Guía centrada y con el mismo muñeco del inicio */
+.auth-g{align-items:center;text-align:center}
+.auth-g .halo{width:190px;height:190px;border-radius:50%;background:linear-gradient(160deg,#F0D27A,#F29C85);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.3),inset 0 0 0 6px rgba(255,255,255,.7);flex:none}
+.auth-g .halo img{width:172px;height:auto;border-radius:0;border:0;background:none;object-fit:initial;margin-bottom:-108px}
+.auth-g .bubble{text-align:center;border-radius:20px}
+.auth-g ol{align-self:center;width:fit-content;max-width:100%;text-align:left}
