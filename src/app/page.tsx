@@ -69,8 +69,8 @@ export default async function Home() {
       <section id="guia" className="guide" aria-label="Cómo usar la tienda">
         <div className="wrap guide-in">
           <div className="guide-doll">
-            <img src="/images/asistente.jpg" alt="Guía virtual de la tienda" />
-            <div className="bubble">¡Hola! Soy tu guía. Te llevo paso a paso.</div>
+            <div className="halo"><img src="/images/guia.png" alt="Guía virtual de la tienda" /></div>
+            <div className="bubble">¡Hola! Soy tu guía.<br />¡Sígueme! 👇</div>
           </div>
           <div style={{ flex: "1 1 560px" }}>
             <h2 className="sec-t" style={{ marginBottom: 16 }}>Cómo usar la tienda</h2>

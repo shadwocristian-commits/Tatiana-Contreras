@@ -93,7 +93,8 @@ img{max-width:100%}
 .guide{background:linear-gradient(135deg,var(--sage-l),#F4F0DF);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:48px 0 0;padding:44px 0}
 .guide-in{display:flex;gap:44px;align-items:center;flex-wrap:wrap}
 .guide-doll{flex:0 0 240px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.guide-doll img{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:50% 12%;border:5px solid var(--sage);background:#E8E8E8}
+.guide-doll .halo{width:210px;height:210px;border-radius:50%;background:linear-gradient(160deg,#F0D27A,#F29C85);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;box-shadow:0 22px 50px rgba(120,56,24,.28),inset 0 0 0 6px rgba(255,255,255,.7)}
+.guide-doll .halo img{width:190px;margin-bottom:-120px}
 .bubble{background:#fff;border-radius:20px 20px 20px 4px;padding:12px 16px;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(120,56,24,.10);text-align:center}
 .steps{flex:1 1 560px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .step{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px}
