@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { Icon } from "@/components/Icons";
 import { setSuspended, deleteUser, setRole, sendReset } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -51,11 +52,11 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                         <details className="adm-menu">
                           <summary aria-label={`Acciones para ${u.email}`}>⋯</summary>
                           <div className="adm-pop">
-                            <form action={sendReset}><input type="hidden" name="email" value={u.email} /><button>✉ Enviar correo para restablecer contraseña</button></form>
+                            <form action={sendReset}><input type="hidden" name="email" value={u.email} /><button><Icon n="mail" />Enviar correo para restablecer contraseña</button></form>
                             {isAdmin
-                              ? <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="cliente" /><button>⭐ Quitar acceso de administración</button></form>
-                              : <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="admin" /><button>⭐ Dar acceso de administración</button></form>}
-                            <form action={setSuspended}><input type="hidden" name="id" value={u.id} /><input type="hidden" name="suspend" value={s ? "0" : "1"} /><button>{s ? "▶ Reactivar cuenta" : "⏸ Suspender cuenta"}</button></form>
+                              ? <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="cliente" /><button><Icon n="remove_moderator" />Quitar acceso de administración</button></form>
+                              : <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="admin" /><button><Icon n="admin_panel_settings" />Dar acceso de administración</button></form>}
+                            <form action={setSuspended}><input type="hidden" name="id" value={u.id} /><input type="hidden" name="suspend" value={s ? "0" : "1"} /><button>{s ? <><Icon n="play_circle" />Reactivar cuenta</> : <><Icon n="pause_circle" />Suspender cuenta</>}</button></form>
                             {!isAdmin && (
                               <form action={deleteUser} className="del">
                                 <b style={{ color: "var(--danger)", fontSize: 14 }}>Eliminar cuenta</b>
@@ -77,16 +78,25 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
           </table>
         </div>
       </div>
-      <div className="adm-c" style={{ display: "grid", gap: 12, maxWidth: 560, border: "2px solid var(--sage)" }}>
-        <h2>Agregar administradora</h2>
-        <p style={{ margin: 0 }}>Escribe el correo de una persona que ya creó su cuenta. Entrará con su propio usuario y verá el panel.</p>
-        <form action={setRole} style={{ display: "grid", gap: 10 }}>
+      <section className="adm-c adm-add" aria-label="Agregar administradora">
+        <div className="adm-add-h"><span className="adm-add-i"><Icon n="shield_person" /></span><div><h2>Agregar administradora</h2><p>Escribe el correo de una persona que ya creó su cuenta. Entrará con su propio usuario y verá el panel.</p></div></div>
+        <form action={setRole} className="adm-add-f">
           <input type="hidden" name="role" value="admin" />
-          <input className="adm-in" type="email" name="email" required placeholder="correo@ejemplo.com" />
-          <button className="btn btn-pri">Dar acceso al panel</button>
+          <input className="adm-in" type="email" name="email" required placeholder="correo@ejemplo.com" aria-label="Correo de la nueva administradora" />
+          <button className="btn btn-pri" style={{ color: "#fff" }}><Icon n="person_add" />&nbsp;Dar acceso al panel</button>
         </form>
-        <small style={{ color: "var(--muted)" }}>Seguridad: no puedes quitarte tu propio acceso, siempre queda al menos 1 administradora y cada cambio queda registrado.</small>
-      </div>
+        <ul className="adm-rules">
+          <li><Icon n="lock" />No puedes quitarte tu propio acceso</li>
+          <li><Icon n="group" />Siempre queda al menos 1 administradora</li>
+          <li><Icon n="history" />Cada cambio queda registrado</li>
+        </ul>
+        <div className="adm-add-l">
+          <b>Equipo actual</b>
+          {all.filter((u) => u.role === "admin").map((u) => (
+            <div key={u.id} className="adm-add-r"><span className="adm-av">{(u.full_name || u.email)[0]?.toUpperCase()}</span><span><b>{u.full_name || u.email}</b><small>{u.email} · desde {new Date(u.created_at).toLocaleDateString("es-PE")}</small></span></div>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

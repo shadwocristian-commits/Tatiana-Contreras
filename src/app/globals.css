@@ -292,3 +292,13 @@ main:has(>.auth){display:flex}
 .auth-g .halo img{width:172px;height:auto;border-radius:0;border:0;background:none;object-fit:initial;margin-bottom:-108px}
 .auth-g .bubble{text-align:center;border-radius:20px}
 .auth-g ol{align-self:center;width:fit-content;max-width:100%;text-align:left}
+
+/* Panel: agregar administradora */
+.adm-add{display:grid;gap:16px;border:2px solid var(--sage);margin-top:18px}
+.adm-add-h{display:flex;gap:14px;align-items:flex-start}.adm-add-h p{margin:4px 0 0;color:var(--muted)}
+.adm-add-i{width:48px;height:48px;border-radius:50%;background:var(--sage-l);display:grid;place-items:center;flex:none}.adm-add-i .ms{font-size:26px;color:var(--cacao)}
+.adm-add-f{display:flex;gap:10px;flex-wrap:wrap}.adm-add-f .adm-in{flex:1 1 280px;min-width:0}.adm-add-f .btn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.adm-rules{list-style:none;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}.adm-rules li{display:inline-flex;align-items:center;gap:6px;background:var(--sage-l);border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:700}.adm-rules .ms{font-size:18px;color:var(--cacao)}
+.adm-add-l{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:14px}.adm-add-r{display:flex;gap:10px;align-items:center}.adm-add-r small{display:block}
+.adm-pop button{display:flex;align-items:center;gap:8px}.adm-pop .ms{font-size:20px;color:var(--cacao)}
+@media (max-width:560px){.adm-add-f .btn{width:100%}}
