@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 import { Icon } from "@/components/Icons";
 import Glass from "@/components/Glass";
 import { setSuspended, deleteUser, setRole, sendReset } from "./actions";
@@ -10,7 +10,7 @@ type U = { id: string; email: string; full_name: string | null; role: string; cr
 export default async function Usuarios({ searchParams }: { searchParams: Promise<{ f?: string; q?: string; ok?: string; err?: string }> }) {
   const { f = "todos", q = "", ok, err } = await searchParams;
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
+  const user = await getUser();
   const { data } = await sb.rpc("admin_list_users");
   const all = (data ?? []) as U[];
   const susp = (u: U) => !!u.banned_until && new Date(u.banned_until) > new Date();

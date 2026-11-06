@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 import { Icon } from "@/components/Icons";
 
 export const metadata = { title: "Mi perfil" };
@@ -12,7 +12,7 @@ async function saveName(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim().slice(0, 80);
   if (name.length < 2) redirect("/cuenta/perfil?err=Escribe%20tu%20nombre");
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
+  const user = await getUser();
   if (!user) redirect("/ingresar?next=/cuenta/perfil");
   await sb.from("profiles").update({ full_name: name }).eq("id", user.id);
   revalidatePath("/", "layout");

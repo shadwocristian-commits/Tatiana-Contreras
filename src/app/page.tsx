@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { paymentsEnabled } from "@/lib/pagos";
+import { createClient, getUser } from "@/lib/supabase/server";
+import { getCategorias, getPagosActivos } from "@/lib/publico";
 import AccessCard from "@/components/AccessCard";
 import ProductCard from "@/components/ProductCard";
 import { Icon, TherapyIcon } from "@/components/Icons";
@@ -12,13 +12,15 @@ const TONES = ["t-sage", "t-honey", "t-sky", "t-coral", "t-sage", "t-honey"];
 
 export default async function Home() {
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
-  const payments = await paymentsEnabled(sb);
-  const { data } = await sb.from("products").select("*").eq("is_published", true).order("created_at", { ascending: false }).limit(3);
+  const [user, payments, { data }, cats, { data: all }] = await Promise.all([
+    getUser(),
+    getPagosActivos(),
+    sb.from("products").select("*").eq("is_published", true).order("created_at", { ascending: false }).limit(3),
+    getCategorias(),
+    sb.from("products").select("category_id").eq("is_published", true),
+  ]);
   const products = (data ?? []) as Product[];
-  const { data: cats } = await sb.from("categories").select("id,slug,name").order("sort");
-  const categories = (cats ?? []) as (Category & { id: string })[];
-  const { data: all } = await sb.from("products").select("category_id").eq("is_published", true);
+  const categories = cats as (Category & { id: string })[];
   const counts = new Map<string, number>();
   (all ?? []).forEach((r: { category_id: string | null }) => r.category_id && counts.set(r.category_id, (counts.get(r.category_id) ?? 0) + 1));
   const total = all?.length ?? 0;

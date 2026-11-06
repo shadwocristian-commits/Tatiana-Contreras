@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { paymentsEnabled } from "@/lib/pagos";
+import { getCategorias, getPagosActivos } from "@/lib/publico";
 import ProductCard from "@/components/ProductCard";
 import type { Category, Product } from "@/lib/types";
 
@@ -12,9 +12,8 @@ type SP = { area?: string; cat?: string; q?: string; gratis?: string };
 export default async function Tienda({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const sb = await createClient();
-  const payments = await paymentsEnabled(sb);
-  const { data: cats } = await sb.from("categories").select("id,slug,name,area").order("sort");
-  const categories = (cats ?? []) as (Category & { id: string })[];
+  const [payments, cats] = await Promise.all([getPagosActivos(), getCategorias()]);
+  const categories = cats as (Category & { id: string })[];
 
   let query = sb.from("products").select("*").eq("is_published", true).order("created_at", { ascending: false });
   if (sp.area === "clinica" || sp.area === "educativa") query = query.eq("area", sp.area);

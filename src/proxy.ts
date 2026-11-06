@@ -3,6 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Renueva la sesión de Supabase en cada visita.
 export async function proxy(req: NextRequest) {
+  // Visitantes sin sesión: no hay nada que renovar, se responde al instante.
+  if (!req.cookies.getAll().some((c) => c.name.startsWith("sb-"))) return NextResponse.next();
   let res = NextResponse.next({ request: req });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,7 +20,7 @@ export async function proxy(req: NextRequest) {
       },
     },
   );
-  await supabase.auth.getUser();
+  await supabase.auth.getClaims();
   return res;
 }
 

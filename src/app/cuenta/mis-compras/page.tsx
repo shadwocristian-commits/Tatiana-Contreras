@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Icon } from "@/components/Icons";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 
 export const metadata = { title: "Mis materiales" };
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ type Row = { id: string; products: { id: string; slug: string; title: string; fo
 export default async function MisCompras({ searchParams }: { searchParams: Promise<{ aviso?: string }> }) {
   const { aviso } = await searchParams;
   const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
+  const user = await getUser();
   if (!user) redirect("/ingresar?next=/cuenta/mis-compras");
   const { data } = await sb
     .from("order_items")

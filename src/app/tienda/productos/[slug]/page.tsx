@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { paymentsEnabled, priceLabel } from "@/lib/pagos";
+import { createClient, getUser } from "@/lib/supabase/server";
+import { getPagosActivos } from "@/lib/publico";
+import { priceLabel } from "@/lib/pagos";
 import { acquireProduct } from "@/app/actions";
 import ProductCard from "@/components/ProductCard";
 import ReviewForm from "@/components/ReviewForm";
@@ -25,8 +26,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
   const { data } = await sb.from("products").select("*").eq("slug", slug).eq("is_published", true).maybeSingle();
   if (!data) notFound();
   const p = data as Product;
-  const payments = await paymentsEnabled(sb);
-  const { data: { user } } = await sb.auth.getUser();
+  const [payments, user] = await Promise.all([getPagosActivos(), getUser()]);
 
   let owned = false;
   let reviewed = false;
@@ -36,10 +36,12 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
     const { data: r } = await sb.from("reviews").select("id").eq("product_id", p.id).eq("user_id", user.id).limit(1);
     reviewed = (r?.length ?? 0) > 0;
   }
-  const { data: rv } = await sb.from("reviews").select("*").eq("product_id", p.id).eq("status", "approved").order("created_at", { ascending: false });
+  const [{ data: rv }, { data: relData }] = await Promise.all([
+    sb.from("reviews").select("*").eq("product_id", p.id).eq("status", "approved").order("created_at", { ascending: false }),
+    sb.from("products").select("*").eq("is_published", true).neq("id", p.id).order("created_at", { ascending: false }).limit(4),
+  ]);
   const reviews = (rv ?? []) as Review[];
   const dist = [5, 4, 3, 2, 1].map((n) => ({ n, c: reviews.filter((r) => r.rating === n).length }));
-  const { data: relData } = await sb.from("products").select("*").eq("is_published", true).neq("id", p.id).order("created_at", { ascending: false }).limit(4);
   const related = (relData ?? []) as Product[];
   const canBuy = !payments || p.is_free || p.price_cents === 0;
 
