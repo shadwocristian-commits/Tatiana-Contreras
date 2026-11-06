@@ -30,7 +30,7 @@ export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; l
         <Link className="navb" href="/tienda?area=clinica" onClick={close}>Clínica</Link>
         <Link className="navb" href="/tienda?area=educativa" onClick={close}>Educativa</Link>
         <Link className="navb" href="/tienda?gratis=1" onClick={close}>Gratis</Link>
-        <Link className="navb" href="/#autora" onClick={close}>Sobre Tatiana</Link>
+        <Link className="navb" href="/#guia" onClick={close}>Cómo funciona</Link>
       </nav>
       <div className="actions">
         {loggedIn ? (

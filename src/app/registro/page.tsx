@@ -1,11 +1,12 @@
 import AccessCard from "@/components/AccessCard";
+import AuthShell from "@/components/AuthShell";
 
 export const metadata = { title: "Crear cuenta" };
 
 export default function Registro() {
   return (
-    <div className="wrap" style={{ display: "flex", justifyContent: "center", padding: "56px 28px" }}>
+    <AuthShell>
       <AccessCard initial="registro" />
-    </div>
+    </AuthShell>
   );
 }
