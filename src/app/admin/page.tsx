@@ -21,9 +21,9 @@ export default async function Resumen() {
     <>
       <div className="adm-top"><h1>Resumen</h1><Link className="btn btn-honey" href="/admin/materiales/nuevo">+ Nuevo material</Link></div>
       <div className="adm-k">
-        <div className="adm-c"><small>Materiales</small><span className="v" style={{ color: "var(--honey)" }}>{nProd ?? 0}</span></div>
+        <div className="adm-c"><small>Materiales</small><span className="v" style={{ color: "var(--cacao)" }}>{nProd ?? 0}</span></div>
         <div className="adm-c"><small>Descargas</small><span className="v" style={{ color: "var(--sage)" }}>{nDl ?? 0}</span></div>
-        <div className="adm-c"><small>Opiniones por revisar</small><span className="v" style={{ color: "var(--coral)" }}>{nPend ?? 0}</span></div>
+        <div className="adm-c"><small>Opiniones por revisar</small><span className="v" style={{ color: "#C8553D" }}>{nPend ?? 0}</span></div>
         <div className="adm-c"><small>Usuarios</small><span className="v" style={{ color: "var(--sky)" }}>{nUsers ?? 0}</span></div>
       </div>
       <div className="adm-2">
@@ -38,7 +38,7 @@ export default async function Resumen() {
           {byCat.map((c) => <div key={c.name} className="adm-l"><span>{c.name}</span><b>{c.n}</b></div>)}
         </div>
       </div>
-      {(nPend ?? 0) > 0 && <div className="adm-c"><b>Tienes {nPend} {nPend === 1 ? "opinión" : "opiniones"} por revisar.</b> <Link href="/admin/opiniones" style={{ color: "var(--honey)", fontWeight: 800 }}>Revisar ahora →</Link></div>}
+      {(nPend ?? 0) > 0 && <div className="adm-c"><b>Tienes {nPend} {nPend === 1 ? "opinión" : "opiniones"} por revisar.</b> <Link href="/admin/opiniones" style={{ color: "var(--cacao)", fontWeight: 800, textDecoration: "underline" }}>Revisar ahora →</Link></div>}
     </>
   );
 }

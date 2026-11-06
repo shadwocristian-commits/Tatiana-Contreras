@@ -8,5 +8,7 @@ export async function GET(req: NextRequest) {
     const sb = await createClient();
     await sb.auth.exchangeCodeForSession(code);
   }
-  return NextResponse.redirect(new URL("/tienda", req.nextUrl.origin));
+  const next = req.nextUrl.searchParams.get("next") ?? "";
+  const dest = next.startsWith("/") && !next.startsWith("//") ? next : "/tienda";
+  return NextResponse.redirect(new URL(dest, req.nextUrl.origin));
 }

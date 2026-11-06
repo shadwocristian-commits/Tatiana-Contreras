@@ -22,7 +22,7 @@ export default async function Materiales() {
                   <td>{p.area === "clinica" ? "Clínica" : "Educativa"}</td>
                   <td>{p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`}</td>
                   <td><span className={`adm-st ${p.is_published ? "ok" : ""}`}>{p.is_published ? "Publicado" : "Borrador"}</span></td>
-                  <td><Link href={`/admin/materiales/${p.id}`} style={{ color: "var(--honey)", fontWeight: 800 }}>Editar</Link></td>
+                  <td><Link href={`/admin/materiales/${p.id}`} style={{ color: "var(--cacao)", fontWeight: 800, textDecoration: "underline" }}>Editar</Link></td>
                 </tr>
               ))}
             </tbody>

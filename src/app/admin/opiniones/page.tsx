@@ -13,7 +13,7 @@ export default async function Opiniones() {
         {rows.map((r) => (
           <form key={r.id} action={moderateReview} className="adm-r">
             <input type="hidden" name="id" value={r.id} />
-            <div><b>{r.author_name}</b> · <span style={{ color: "var(--honey)" }}>{"★".repeat(r.rating)}</span> · {r.products?.title}</div>
+            <div><b>{r.author_name}</b> · <span style={{ color: "#D9A400" }}>{"★".repeat(r.rating)}</span> · {r.products?.title}</div>
             <p style={{ margin: 0 }}>{r.comment}</p>
             <textarea name="reply" rows={2} placeholder="Respuesta de Tatiana (opcional)" />
             <div style={{ display: "flex", gap: 8 }}>
