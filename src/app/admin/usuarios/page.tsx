@@ -58,11 +58,11 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                             <form action={setSuspended}><input type="hidden" name="id" value={u.id} /><input type="hidden" name="suspend" value={s ? "0" : "1"} /><button>{s ? "▶ Reactivar cuenta" : "⏸ Suspender cuenta"}</button></form>
                             {!isAdmin && (
                               <form action={deleteUser} className="del">
-                                <b style={{ color: "#B3321E", fontSize: 14 }}>Eliminar cuenta</b>
+                                <b style={{ color: "var(--danger)", fontSize: 14 }}>Eliminar cuenta</b>
                                 <small>Se borra la cuenta y su historial. No se puede deshacer.</small>
                                 <input type="hidden" name="id" value={u.id} />
                                 <input className="adm-in" name="confirm" required pattern="ELIMINAR" title="Escribe ELIMINAR" placeholder="Escribe ELIMINAR" />
-                                <button className="btn btn-danger" style={{ all: "unset", cursor: "pointer", background: "#B3321E", color: "#fff", borderRadius: 999, padding: "10px 16px", textAlign: "center", fontWeight: 800 }}>Eliminar definitivamente</button>
+                                <button className="btn btn-danger" style={{ all: "unset", cursor: "pointer", background: "var(--danger)", color: "#fff", borderRadius: 999, padding: "10px 16px", textAlign: "center", fontWeight: 800 }}>Eliminar definitivamente</button>
                               </form>
                             )}
                           </div>

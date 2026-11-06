@@ -23,7 +23,7 @@ export default async function Resumen() {
       <div className="adm-k">
         <div className="adm-c"><small>Materiales</small><span className="v" style={{ color: "var(--cacao)" }}>{nProd ?? 0}</span></div>
         <div className="adm-c"><small>Descargas</small><span className="v" style={{ color: "var(--sage)" }}>{nDl ?? 0}</span></div>
-        <div className="adm-c"><small>Opiniones por revisar</small><span className="v" style={{ color: "#C8553D" }}>{nPend ?? 0}</span></div>
+        <div className="adm-c"><small>Opiniones por revisar</small><span className="v" style={{ color: "var(--cacao)" }}>{nPend ?? 0}</span></div>
         <div className="adm-c"><small>Usuarios</small><span className="v" style={{ color: "var(--sky)" }}>{nUsers ?? 0}</span></div>
       </div>
       <div className="adm-2">

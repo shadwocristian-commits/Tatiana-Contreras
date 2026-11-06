@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { paymentsEnabled, priceLabel } from "@/lib/pagos";
 import { acquireProduct } from "@/app/actions";
+import ProductCard from "@/components/ProductCard";
 import ReviewForm from "@/components/ReviewForm";
 import type { Product, Review } from "@/lib/types";
 
@@ -37,6 +38,8 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
   const { data: rv } = await sb.from("reviews").select("*").eq("product_id", p.id).eq("status", "approved").order("created_at", { ascending: false });
   const reviews = (rv ?? []) as Review[];
   const dist = [5, 4, 3, 2, 1].map((n) => ({ n, c: reviews.filter((r) => r.rating === n).length }));
+  const { data: relData } = await sb.from("products").select("*").eq("is_published", true).neq("id", p.id).order("created_at", { ascending: false }).limit(4);
+  const related = (relData ?? []) as Product[];
   const canBuy = !payments || p.is_free || p.price_cents === 0;
 
   return (
@@ -44,7 +47,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
       <div style={{ padding: "28px 0 0", fontSize: 14 }}><Link href="/">Inicio</Link> / <Link href="/tienda">Tienda</Link> / <b>{p.title}</b></div>
       <div className="pd">
         <div className="pd-cover" style={{ flex: "1 1 520px" }}>
-          {p.cover_url ? <img src={p.cover_url} alt={p.title} /> : <div className="thumb w0" style={{ minHeight: 520, height: "100%" }} />}
+          {p.cover_url ? <img src={p.cover_url} alt={p.title} /> : <div className="pd-ph"><span>{p.format || "PDF"} · {p.area === "clinica" ? "Clínica" : "Educativa"}</span><b>{p.title}</b></div>}
         </div>
         <div className="pd-info">
           <span className="tag">{p.area === "clinica" ? "Clínica" : "Educativa"}{p.is_sample ? " · Ejemplo" : ""}</span>
@@ -79,13 +82,13 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
 
       <section id="opiniones" className="sec">
         <h2>Opiniones</h2>
-        <div style={{ display: "flex", gap: 32, flexWrap: "wrap", margin: "12px 0 24px" }}>
+        <div className="rate">
           <div>
-            <div style={{ fontSize: 48, fontFamily: "'DM Serif Display',serif" }}>{p.rating_count ? Number(p.rating_avg).toFixed(1) : "–"}</div>
+            <div className="big">{p.rating_count ? Number(p.rating_avg).toFixed(1) : "Nuevo"}</div>
             <div className="stars">{stars(p.rating_avg ?? 0)}</div>
             <div>{p.rating_count} reseñas</div>
           </div>
-          <div style={{ flex: "1 1 240px", maxWidth: 380 }}>
+          <div>
             {dist.map((d) => (
               <div key={d.n} style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
                 <span style={{ width: 28 }}>{d.n} ★</span>
@@ -110,6 +113,14 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
             : <ReviewForm productId={p.id} slug={p.slug} />}
         </div>
       </section>
+      {related.length > 0 && (
+        <section className="sec sec-rel">
+          <h2 className="big" style={{ fontSize: 34, marginBottom: 16 }}>Más materiales</h2>
+          <div className="grid3" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))" }}>
+            {related.map((r) => <ProductCard key={r.id} p={r} payments={payments} />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

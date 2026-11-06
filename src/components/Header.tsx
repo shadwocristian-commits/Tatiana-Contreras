@@ -14,7 +14,7 @@ export default async function Header() {
   const { data: cats } = await sb.from("categories").select("slug,name,area").order("sort");
   return (
     <>
-      <div className="promo">Descarga inmediata · Materiales para terapia clínica y educativa</div>
+      <div className="promo">Descarga inmediata<span className="hide-m"> · Materiales para terapia clínica y educativa</span></div>
       <header className="hdr" style={{ position: "sticky" }}>
         <div className="wrap hdr-in" style={{ position: "relative" }}>
           <Link href="/" className="brand"><img src="/images/logo.png" alt="Logo Materiales de Tatiana" /><span>Materiales de Tatiana</span></Link>

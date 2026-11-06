@@ -41,7 +41,7 @@ export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; l
           </>
         ) : (
           <>
-            <Link className="btn" href="/registro" style={{ minHeight: 44 }}>Crear cuenta</Link>
+            <Link className="btn hide-m" href="/registro" style={{ minHeight: 44 }}>Crear cuenta</Link>
             <Link className="btn btn-pri" href="/ingresar" style={{ minHeight: 44, color: "#fff" }}>Ingresar</Link>
           </>
         )}
