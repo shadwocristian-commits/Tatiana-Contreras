@@ -1,3 +1,4 @@
+import AutoClose from "@/components/AutoClose";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,400..600,0..1&display=swap" />
         <link rel="icon" href="/images/logo.png" />
       </head>
-      <body>
+      <body><AutoClose />
         <Header />
         <main>{children}</main>
         <Footer />

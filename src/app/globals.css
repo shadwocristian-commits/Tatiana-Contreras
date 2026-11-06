@@ -283,3 +283,5 @@ main:has(>.auth){display:flex}
 .adm-s a,.adm-s span.off{justify-content:space-between}.adm-l{display:flex;align-items:center;gap:10px;padding:0!important}.adm-l .ms{font-size:21px}.adm-s a.on .ms{color:#fff}
 .btab a .ms{font-size:25px}.btab a.on .ms{font-variation-settings:'FILL' 1,'wght' 500,'opsz' 24}
 .step b.n .ms{color:#fff;font-size:19px}
+.adm-s a.on .adm-l,.adm-s a.on .adm-l .ms{color:#fff}
+.adm-s a:hover .adm-l{color:var(--ink)}.adm-s a.on:hover{background:var(--cacao)}.adm-s a.on:hover .adm-l,.adm-s a.on:hover .ms{color:#fff}
