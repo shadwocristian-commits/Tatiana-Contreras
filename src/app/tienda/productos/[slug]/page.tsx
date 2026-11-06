@@ -81,7 +81,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
         <h2>Opiniones</h2>
         <div style={{ display: "flex", gap: 32, flexWrap: "wrap", margin: "12px 0 24px" }}>
           <div>
-            <div style={{ fontSize: 48, fontFamily: "Fraunces,serif" }}>{p.rating_count ? Number(p.rating_avg).toFixed(1) : "–"}</div>
+            <div style={{ fontSize: 48, fontFamily: "'DM Serif Display',serif" }}>{p.rating_count ? Number(p.rating_avg).toFixed(1) : "–"}</div>
             <div className="stars">{stars(p.rating_avg ?? 0)}</div>
             <div>{p.rating_count} reseñas</div>
           </div>
