@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import Glass from "./Glass";
 import { signOut } from "@/app/actions";
 import { Icon } from "./Icons";
 import type { Category } from "@/lib/types";
@@ -8,6 +10,11 @@ import type { Category } from "@/lib/types";
 export default function NavMenu({ cats, loggedIn, admin, name }: { cats: Category[]; loggedIn: boolean; admin: boolean; name: string }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const path = usePathname();
+  const sp = useSearchParams();
+  const inShop = path.startsWith("/tienda") && !path.startsWith("/tienda/productos");
+  const area = sp.get("area"), gratis = sp.get("gratis") === "1";
+  const onTienda = inShop && !area && !gratis;
   const terapias = (
     <div className="mega-col">
       <h3>Tipo de terapia</h3>
@@ -26,13 +33,13 @@ export default function NavMenu({ cats, loggedIn, admin, name }: { cats: Categor
   );
   return (
     <>
-      <nav className="nav" aria-label="Principal">
-        <button className="navb" aria-expanded={open} aria-controls="mega" onClick={() => setOpen(!open)}><Icon n="storefront" />Tienda<Icon n="expand_more" /></button>
-        <Link className="navb" href="/tienda?area=clinica" onClick={close}><Icon n="psychology" />Clínica</Link>
-        <Link className="navb" href="/tienda?area=educativa" onClick={close}><Icon n="school" />Educativa</Link>
-        <Link className="navb" href="/tienda?gratis=1" onClick={close}><Icon n="redeem" />Gratis</Link>
+      <Glass as="nav" className="nav" aria-label="Principal">
+        <button className={`navb${onTienda ? " on" : ""}`} aria-expanded={open} aria-controls="mega" onClick={() => setOpen(!open)}><Icon n="storefront" />Tienda<Icon n="expand_more" /></button>
+        <Link className={`navb${inShop && area === "clinica" ? " on" : ""}`} href="/tienda?area=clinica" onClick={close}><Icon n="psychology" />Clínica</Link>
+        <Link className={`navb${inShop && area === "educativa" ? " on" : ""}`} href="/tienda?area=educativa" onClick={close}><Icon n="school" />Educativa</Link>
+        <Link className={`navb${inShop && gratis ? " on" : ""}`} href="/tienda?gratis=1" onClick={close}><Icon n="redeem" />Gratis</Link>
         <Link className="navb" href="/#guia" onClick={close}><Icon n="help" />Cómo funciona</Link>
-      </nav>
+      </Glass>
       <div className="actions">
         {loggedIn ? (
           <details className="acct">

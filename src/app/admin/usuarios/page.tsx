@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Icon } from "@/components/Icons";
+import Glass from "@/components/Glass";
 import { setSuspended, deleteUser, setRole, sendReset } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -24,11 +25,11 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
       {ok && <div className="adm-msg ok" role="status">{ok}</div>}
       {err && <div className="adm-msg err" role="alert">{err}</div>}
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-        <nav className="adm-tabs" aria-label="Filtros">
+        <Glass as="nav" className="adm-tabs" aria-label="Filtros">
           {tab("todos", "Todos", all.length)}
           {tab("admin", "Equipo admin", all.filter((u) => u.role === "admin").length)}
           {tab("suspendidos", "Suspendidos", all.filter(susp).length)}
-        </nav>
+        </Glass>
         <form action="/admin/usuarios" style={{ display: "flex", gap: 8 }}>
           <input type="hidden" name="f" value={f} />
           <input className="adm-in" name="q" defaultValue={q} placeholder="Buscar por nombre o correo…" style={{ minWidth: 240 }} />

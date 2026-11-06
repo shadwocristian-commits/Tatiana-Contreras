@@ -302,3 +302,36 @@ main:has(>.auth){display:flex}
 .adm-add-l{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:14px}.adm-add-r{display:flex;gap:10px;align-items:center}.adm-add-r small{display:block}
 .adm-pop button{display:flex;align-items:center;gap:8px}.adm-pop .ms{font-size:20px;color:var(--cacao)}
 @media (max-width:560px){.adm-add-f .btn{width:100%}}
+
+/* ===== Estilo cristal (píldora deslizante) ===== */
+.glass{position:relative;display:flex;background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.85);box-shadow:0 8px 24px rgba(120,56,24,.12),inset 0 1px 0 rgba(255,255,255,.9);border-radius:999px;padding:4px;gap:2px}
+@supports not (backdrop-filter:blur(1px)){.glass{background:#fff}}
+.glass>*{position:relative;z-index:1}
+.glass .glass-pill{position:absolute;z-index:0;top:4px;bottom:4px;left:0;width:var(--w,0);transform:translateX(var(--x,0));opacity:var(--o,0);border-radius:999px;background:rgba(120,56,24,.94);box-shadow:0 6px 16px rgba(120,56,24,.32),inset 0 1px 0 rgba(255,255,255,.25);pointer-events:none}
+.glass.ready .glass-pill{transition:transform .38s cubic-bezier(.3,1.25,.5,1),width .38s cubic-bezier(.3,1.25,.5,1),opacity .2s}
+@media (prefers-reduced-motion:reduce){.glass.ready .glass-pill{transition:none}}
+.glass .on,.glass [aria-current=page],.glass [aria-selected=true]{color:#fff!important;background:transparent!important;border-color:transparent!important}
+.glass .on .ms{color:#fff}
+.nav.glass{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.85);padding:4px}
+.nav.glass .navb:hover:not(.on){background:rgba(168,200,144,.25)}
+.nav.glass .navb[aria-expanded=true]:not(.on){background:var(--sage-l);color:var(--ink)}.nav.glass .navb[aria-expanded=true]:not(.on) .ms{color:var(--cacao)}
+.tabs.glass{display:flex;background:rgba(238,244,230,.75);padding:5px}.tabs.glass button{background:transparent;color:var(--cacao);position:relative}.tabs.glass button.on{color:#fff}
+.adm-tabs.glass{display:inline-flex;gap:2px;flex-wrap:nowrap;max-width:100%;overflow-x:auto}.adm-tabs.glass a{border:0;background:transparent;border-radius:999px;padding:9px 18px;font-weight:800;font-size:14px;color:var(--ink);white-space:nowrap}
+/* barra inferior del celular: cristal flotante, la activa muestra su nombre */
+@media (max-width:760px){
+ .btab{display:flex;justify-content:space-between;align-items:center;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:6px;background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 12px 32px rgba(120,56,24,.22),inset 0 1px 0 rgba(255,255,255,.9)}
+ .btab a{flex-direction:row;gap:0;min-height:48px;min-width:48px;padding:0 12px;border-radius:999px;justify-content:center;color:var(--cacao);transition:background .3s,padding .3s,gap .3s}
+ .btab a em{font-style:normal;font-size:14px;font-weight:800;max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .35s ease}
+ .btab a.on{background:rgba(120,56,24,.94);color:#fff;padding:0 18px;gap:7px;box-shadow:0 6px 16px rgba(120,56,24,.32)}
+ .btab a.on .ms{color:#fff;font-variation-settings:'FILL' 1,'wght' 500,'opsz' 24}
+ .btab a.on em{max-width:110px}
+ body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+ /* filtros de la tienda: fila deslizable de chips */
+ .filters{flex-direction:row;align-items:center;overflow-x:auto;gap:8px;padding:6px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ .filters::-webkit-scrollbar{display:none}
+ .filters h3{display:none}
+ .filters a{display:inline-flex!important;flex:none;white-space:nowrap;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+ .filters a.on{background:var(--cacao);color:#fff;border-color:var(--cacao)}
+}
+@media (max-width:760px){.nav.glass{display:none}}
+@media (min-width:761px) and (max-width:1020px){.nav.glass{width:100%;margin:0;overflow-x:auto;justify-content:flex-start}}

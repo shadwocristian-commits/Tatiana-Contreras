@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { Suspense } from "react";
 import NavMenu from "./NavMenu";
 import BottomNav from "./BottomNav";
 import { Icon } from "./Icons";
@@ -22,7 +23,7 @@ export default async function Header() {
       <header className="hdr" style={{ position: "sticky" }}>
         <div className="wrap hdr-in" style={{ position: "relative" }}>
           <Link href="/" className="brand"><img src="/images/logo.png" alt="Logo Materiales de Tatiana" /><span>Materiales de Tatiana</span></Link>
-          <NavMenu cats={(cats ?? []) as Category[]} loggedIn={!!user} admin={admin} name={name} />
+          <Suspense fallback={null}><NavMenu cats={(cats ?? []) as Category[]} loggedIn={!!user} admin={admin} name={name} /></Suspense>
         </div>
       </header>
       <BottomNav loggedIn={!!user} admin={admin} />

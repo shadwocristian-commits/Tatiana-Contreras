@@ -17,8 +17,8 @@ export default function BottomNav({ loggedIn, admin }: { loggedIn: boolean; admi
   return (
     <nav className="btab" aria-label="Navegación rápida">
       {items.map((i) => (
-        <Link key={i.label} href={i.href} className={i.on ? "on" : ""} aria-current={i.on ? "page" : undefined}>
-          <Icon n={i.ico} />{i.label}
+        <Link key={i.label} href={i.href} className={i.on ? "on" : ""} aria-label={i.label} aria-current={i.on ? "page" : undefined}>
+          <Icon n={i.ico} /><em>{i.label}</em>
         </Link>
       ))}
     </nav>
