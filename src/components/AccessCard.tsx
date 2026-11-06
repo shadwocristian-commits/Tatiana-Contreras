@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Turnstile from "./Turnstile";
+import { safeNext, passwordProblem, PW_MIN } from "@/lib/safe";
 import { Icon } from "./Icons";
 
 export default function AccessCard({ initial = "ingresar", next = "/tienda" }: { initial?: "ingresar" | "registro"; next?: string }) {
@@ -14,6 +15,9 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
+  const [tk, setTk] = useState(0);
+  const [fails, setFails] = useState(0);
+  const [until, setUntil] = useState(0);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,9 +25,11 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") ?? "").trim();
     const password = String(f.get("password") ?? "");
+    if (Date.now() < until) return setError(`Demasiados intentos. Espera ${Math.ceil((until - Date.now()) / 1000)} segundos.`);
     if (!token) return setError("Completa la verificación de seguridad.");
     if (mode === "registro") {
-      if (password.length < 8) return setError("La contraseña debe tener al menos 8 caracteres.");
+      const pp = passwordProblem(password);
+      if (pp) return setError(pp);
       if (!terms) return setError("Debes aceptar los términos y condiciones.");
     }
     setBusy(true);
@@ -31,8 +37,12 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
     if (mode === "ingresar") {
       const { error: err } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken: token } });
       setBusy(false);
-      if (err) return setError("Correo o contraseña incorrectos.");
-      router.push(next); router.refresh();
+      if (err) {
+        const n = fails + 1; setFails(n); setToken(""); setTk((k) => k + 1);
+        if (n >= 5) { setUntil(Date.now() + 60000); setFails(0); return setError("Demasiados intentos. Espera 1 minuto."); }
+        return setError("Correo o contraseña incorrectos.");
+      }
+      router.push(safeNext(next)); router.refresh();
     } else {
       const { data, error: err } = await sb.auth.signUp({
         email, password,
@@ -42,7 +52,7 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
           data: { full_name: String(f.get("name") ?? "").trim(), terms_accepted: true },
         },
       });
-      setBusy(false);
+      setBusy(false); setToken(""); setTk((k) => k + 1);
       if (err) return setError("No se pudo crear la cuenta. Revisa los datos e inténtalo otra vez.");
       if (data.session) { router.push(next); router.refresh(); }
       else setOk("Cuenta creada. Revisa tu correo para confirmarla.");
@@ -69,14 +79,15 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
           <label className="field">Nombre<input name="name" autoComplete="name" required placeholder="Tu nombre" /></label>
         )}
         <label className="field">Correo<input name="email" type="email" autoComplete="email" required placeholder="tucorreo@ejemplo.com" /></label>
-        <label className="field">Contraseña<input name="password" type="password" autoComplete={mode === "ingresar" ? "current-password" : "new-password"} required minLength={mode === "registro" ? 8 : undefined} placeholder="••••••••" /></label>
+        <label className="field">Contraseña<input name="password" type="password" autoComplete={mode === "ingresar" ? "current-password" : "new-password"} required minLength={mode === "registro" ? PW_MIN : undefined} placeholder="••••••••" />{mode === "registro" && <small style={{ color: "var(--muted)", fontWeight: 600 }}>Mínimo {PW_MIN} caracteres, con letras y números.</small>}</label>
+        {mode === "ingresar" && <Link href="/cuenta/recuperar" style={{ fontSize: 14, fontWeight: 700, textDecoration: "underline", alignSelf: "flex-start" }}>¿Olvidaste tu contraseña?</Link>}
         {mode === "registro" && (
           <label className="chk">
             <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} />
             <span>Acepto los <Link href="/info/terminos" target="_blank" style={{ textDecoration: "underline" }}>términos y condiciones</Link> y la <Link href="/info/privacidad" target="_blank" style={{ textDecoration: "underline" }}>política de privacidad</Link>.</span>
           </label>
         )}
-        <Turnstile onToken={setToken} />
+        <Turnstile key={tk} onToken={setToken} />
         {error && <div className="msg msg-err" role="alert"><Icon n="error" />{error}</div>}
         {ok && <div className="msg msg-ok" role="status"><Icon n="check_circle" />{ok}</div>}
         <button className="btn btn-pri" type="submit" disabled={busy}>{busy ? "Un momento…" : mode === "ingresar" ? "Ingresar" : "Crear cuenta"}</button>

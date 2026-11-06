@@ -40,6 +40,7 @@ export default function NavMenu({ cats, loggedIn, admin, name }: { cats: Categor
             <div className="acct-pop">
               {admin && <Link href="/admin"><Icon n="admin_panel_settings" />Panel de administración</Link>}
               <Link href="/cuenta/mis-compras"><Icon n="inventory_2" />Mis materiales</Link>
+              <Link href="/cuenta/perfil"><Icon n="account_circle" />Mi perfil</Link>
               <form action={signOut}><button className="out"><Icon n="logout" />Salir</button></form>
             </div>
           </details>

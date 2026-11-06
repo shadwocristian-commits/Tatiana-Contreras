@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/safe";
 
 // Confirma el correo o el ingreso con Google y vuelve a la tienda.
 export async function GET(req: NextRequest) {
@@ -9,6 +10,6 @@ export async function GET(req: NextRequest) {
     await sb.auth.exchangeCodeForSession(code);
   }
   const next = req.nextUrl.searchParams.get("next") ?? "";
-  const dest = next.startsWith("/") && !next.startsWith("//") ? next : "/tienda";
+  const dest = safeNext(next);
   return NextResponse.redirect(new URL(dest, req.nextUrl.origin));
 }

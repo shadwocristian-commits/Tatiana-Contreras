@@ -33,6 +33,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     let file_path = product?.file_path ?? null;
 
     if (cover && cover.size > 0) {
+      if (!["image/jpeg", "image/png", "image/webp"].includes(cover.type)) { setBusy(false); return setError("La portada debe ser JPG, PNG o WebP."); }
       if (cover.size > 5 * 1024 * 1024) { setBusy(false); return setError("La portada pesa más de 5 MB."); }
       const path = `${finalSlug}-${Date.now()}-${safeName(cover.name)}`;
       const { error: err } = await sb.storage.from("portadas").upload(path, cover, { contentType: cover.type, upsert: true });
@@ -40,6 +41,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
       cover_url = sb.storage.from("portadas").getPublicUrl(path).data.publicUrl;
     }
     if (file && file.size > 0) {
+      if (!/\.(pdf|zip)$/i.test(file.name)) { setBusy(false); return setError("El material debe ser un archivo PDF o ZIP."); }
       if (file.size > 50 * 1024 * 1024) { setBusy(false); return setError("El archivo pesa más de 50 MB."); }
       const path = `${finalSlug}/${safeName(file.name)}`;
       const { error: err } = await sb.storage.from("materiales").upload(path, file, { contentType: file.type || "application/pdf", upsert: true });
