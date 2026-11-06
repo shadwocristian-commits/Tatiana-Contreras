@@ -21,14 +21,14 @@ export default async function Admin() {
     <div className="wrap" style={{ padding: "28px 28px 56px" }}>
       <h1 style={{ fontSize: 44 }}>Panel</h1>
       <div className="trust" style={{ margin: "16px 0" }}>
-        <div className="panel-card"><b style={{ fontSize: 28 }}>{nProd ?? 0}</b><br />Materiales</div>
-        <div className="panel-card"><b style={{ fontSize: 28 }}>{nDl ?? 0}</b><br />Descargas</div>
-        <div className="panel-card"><b style={{ fontSize: 28 }}>{rows.length}</b><br />Opiniones por revisar</div>
+        <div className="box"><b style={{ fontSize: 28 }}>{nProd ?? 0}</b><br />Materiales</div>
+        <div className="box"><b style={{ fontSize: 28 }}>{nDl ?? 0}</b><br />Descargas</div>
+        <div className="box"><b style={{ fontSize: 28 }}>{rows.length}</b><br />Opiniones por revisar</div>
       </div>
       <h2>Opiniones pendientes</h2>
       {rows.length === 0 && <p>No hay opiniones pendientes.</p>}
       {rows.map((r) => (
-        <form key={r.id} action={moderateReview} className="panel-card" style={{ display: "grid", gap: 8, marginTop: 12 }}>
+        <form key={r.id} action={moderateReview} className="box" style={{ display: "grid", gap: 8, marginTop: 12 }}>
           <input type="hidden" name="id" value={r.id} />
           <div><b>{r.author_name}</b> · {r.rating} ★ · {r.products?.title}</div>
           <p style={{ margin: 0 }}>{r.comment}</p>

@@ -59,28 +59,19 @@ export default async function Home() {
         )}
       </section>
 
-      <section className="sec trust" style={{ paddingBottom: 0 }}>
+      <section className="sec trust">
         <div className="box"><h3 style={{ fontSize: 22 }}>Descarga inmediata</h3><p style={{ marginBottom: 0 }}>Obtienes el archivo al instante, sin esperas.</p></div>
         <div className="box"><h3 style={{ fontSize: 22 }}>Revisado por una psicóloga</h3><p style={{ marginBottom: 0 }}>Cada material pasa por la revisión de Tatiana.</p></div>
         <div className="box"><h3 style={{ fontSize: 22 }}>Tu cuenta, tus descargas</h3><p style={{ marginBottom: 0 }}>Vuelve a descargar tus materiales cuando quieras.</p></div>
       </section>
 
-      <section id="guia" className="band" style={{ marginBottom: 0 }}>
-        <div className="wrap guide">
-          <div className="guide-l">
-            <img src="/images/asistente.jpg" alt="Guía virtual de Materiales de Tatiana" />
-            <div className="bubble">¡Hola! Soy tu guía. Te llevo paso a paso: elegir, obtener y descargar tu material.</div>
-          </div>
-          <div>
-            <h2 style={{ fontSize: 40, marginBottom: 6 }}>Cómo usar la tienda</h2>
-            <p style={{ margin: "0 0 18px" }}>Cuatro pasos y tu material está listo para usar en terapia, aula o casa.</p>
-            <ol className="steps">
-              <li><b className="n">1</b><h3>Elige tu terapia</h3><span>Lenguaje, atención, aprendizaje, conducta, estimulación temprana o emocional.</span><Link href="/tienda" style={{ fontWeight: 800 }}>Ir a la tienda</Link></li>
-              <li><b className="n">2</b><h3>Crea tu cuenta</h3><span>Es gratis y solo toma un minuto.</span><Link href="/registro" style={{ fontWeight: 800 }}>Crear cuenta</Link></li>
-              <li><b className="n">3</b><h3>Obtén y descarga</h3><span>Pulsa “Obtener” y descárgalo desde Mis materiales cuando quieras.</span><Link href="/cuenta/mis-compras" style={{ fontWeight: 800 }}>Mis materiales</Link></li>
-              <li><b className="n">4</b><h3>Cuéntanos cómo te fue</h3><span>Deja tu calificación y comentario en el material.</span><Link href="/tienda?gratis=1" style={{ fontWeight: 800 }}>Ver gratis</Link></li>
-            </ol>
-          </div>
+      <section id="autora" className="author" style={{ marginTop: 16 }}>
+        <img src="/images/asistente.jpg" alt="Asistente virtual de Tatiana" />
+        <div style={{ flex: "1 1 420px" }}>
+          <h2 style={{ fontSize: 32 }}>Hola, soy Tatiana</h2>
+          <p style={{ margin: "8px 0 0", fontSize: 17, lineHeight: 1.6 }}>
+            [Presentación de Tatiana: formación, años de experiencia y por qué creó estos materiales.] Diseño cada material pensando en cómo se usa de verdad en la sesión y en el aula.
+          </p>
         </div>
       </section>
     </div>

@@ -55,9 +55,6 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
 
   return (
     <section id="acceso" className="access" aria-label="Acceso a tu cuenta">
-      <img className="logo-top" src="/images/logo.png" alt="" />
-      <h2>{mode === "ingresar" ? "Bienvenida/o de vuelta" : "Crea tu cuenta gratis"}</h2>
-      <p className="sub">{mode === "ingresar" ? "Entra para descargar tus materiales." : "Descarga materiales y deja tu opinión."}</p>
       <div className="tabs" role="tablist">
         <button type="button" role="tab" aria-selected={mode === "ingresar"} className={mode === "ingresar" ? "on" : ""} onClick={() => setMode("ingresar")}>Ingresar</button>
         <button type="button" role="tab" aria-selected={mode === "registro"} className={mode === "registro" ? "on" : ""} onClick={() => setMode("registro")}>Crear cuenta</button>
