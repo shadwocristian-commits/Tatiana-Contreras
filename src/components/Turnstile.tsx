@@ -21,6 +21,10 @@ export default function Turnstile({ onToken }: { onToken: (t: string) => void })
         id = window.turnstile.render(ref.current, {
           sitekey,
           callback: onToken,
+          size: "flexible",
+          theme: "light",
+          appearance: "interaction-only",
+          language: "es",
           "expired-callback": () => onToken(""),
         });
       }
@@ -37,5 +41,5 @@ export default function Turnstile({ onToken }: { onToken: (t: string) => void })
       if (id !== undefined && window.turnstile) window.turnstile.remove(id);
     };
   }, [onToken]);
-  return <div ref={ref} aria-label="Verificación de seguridad" />;
+  return <div ref={ref} className="ts" aria-label="Verificación de seguridad" />;
 }

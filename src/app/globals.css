@@ -208,3 +208,58 @@ main:has(>.auth){display:flex}
 .auth{align-items:stretch}
 .auth-g{min-height:0;height:100%}
 .auth-f{align-items:center}
+
+/* ===== Cuenta (escritorio y celular) ===== */
+.acct{position:relative}
+.acct>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px 4px 4px;font-weight:800;min-height:46px}
+.acct>summary::-webkit-details-marker{display:none}
+.acct>summary i{width:36px;height:36px;border-radius:50%;background:var(--sage-l);color:var(--cacao);display:grid;place-items:center;font-style:normal;font-weight:900}
+.acct>summary em{font-style:normal;font-size:12px;color:var(--muted)}
+.acct[open]>summary{border-color:var(--cacao)}
+.acct-pop{position:absolute;right:0;top:54px;z-index:40;width:250px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 44px rgba(120,56,24,.2);padding:8px;display:flex;flex-direction:column}
+.acct-pop a,.acct-pop .out{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;padding:12px 14px;border-radius:12px;font-weight:700;font-size:15px;color:var(--ink)}
+.acct-pop a:hover,.acct-pop .out:hover{background:var(--sage-l)}
+.acct-pop form{border-top:1px solid var(--line);margin-top:4px;padding-top:4px}.acct-pop .out{color:var(--danger)}
+.btab{display:none}
+.ts{min-height:0}.ts:not(:empty){margin-top:2px}
+.fact i{display:none;font-style:normal;font-size:24px}
+.fact>div{display:contents}
+
+/* ===== Celular: barra inferior tipo app ===== */
+@media (max-width:760px){
+ .nav{display:none}
+ .hdr{position:sticky}
+ .hdr-in{flex-wrap:nowrap}
+ .acct-n{display:none}
+ .acct>summary{padding:3px 10px 3px 3px;min-height:42px}
+ .btab{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom))}
+ .btab a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:52px;border-radius:14px;font-size:12px;font-weight:800;color:var(--muted)}
+ .btab a b{font-size:21px;line-height:1}
+ .btab a.on{color:var(--cacao);background:var(--sage-l)}
+ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+ /* ficha: datos en filas */
+ .facts{grid-template-columns:1fr}
+ .fact{display:flex;flex-direction:row;align-items:center;gap:14px;text-align:left;padding:12px 16px}
+ .fact i{display:block}.fact>div{display:block}
+ .fact b{display:block;font-size:18px}.fact span{font-size:13px}
+ /* iPhone: sin zoom al escribir */
+ input,select,textarea{font-size:16px!important}
+ /* áreas táctiles de 44 px */
+ .ftr a,.filters a,.mi,.anchors a{display:flex;align-items:center;min-height:44px}
+ .ftr .ftr-grid>div a{padding:0}
+ .tag,.chk,.chk input{min-height:0}
+ .chk{align-items:flex-start;padding:4px 0}.chk input{width:22px;height:22px;margin-top:2px}
+}
+@media (max-width:340px){
+ .wrap{padding:0 12px}
+ .brand span{font-size:14px}.brand img{width:32px;height:32px}
+ .hero h1{font-size:34px}
+}
+
+/* ===== Táctil (celular y tablet) y pantallas muy angostas ===== */
+@media (max-width:560px){.hero-l,.hero>*,.pd-cover,.pd-info{flex-basis:100%!important;min-width:0!important}.catalog{flex-basis:100%}}
+@media (pointer:coarse){
+ input,select,textarea{font-size:16px!important}
+ .ftr a,.filters a,.mi,.anchors a,.toc a,.legal-b a{display:inline-flex;align-items:center;min-height:44px}
+ .ftr .ftr-grid a,.filters a,.toc a{display:flex}
+}

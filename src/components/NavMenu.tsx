@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signOut } from "@/app/actions";
 import type { Category } from "@/lib/types";
 
-export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; loggedIn: boolean; admin: boolean }) {
+export default function NavMenu({ cats, loggedIn, admin, name }: { cats: Category[]; loggedIn: boolean; admin: boolean; name: string }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   const terapias = (
@@ -34,11 +34,14 @@ export default function NavMenu({ cats, loggedIn, admin }: { cats: Category[]; l
       </nav>
       <div className="actions">
         {loggedIn ? (
-          <>
-            {admin && <Link className="btn" href="/admin" style={{ minHeight: 44 }}>Panel</Link>}
-            <Link className="btn" href="/cuenta/mis-compras" style={{ minHeight: 44 }}>Mis materiales</Link>
-            <form action={signOut}><button className="btn btn-pri" style={{ minHeight: 44 }}>Salir</button></form>
-          </>
+          <details className="acct">
+            <summary aria-label="Menú de mi cuenta"><i>{name.charAt(0).toUpperCase()}</i><span className="acct-n">{name.split(" ")[0]}</span><em aria-hidden>▾</em></summary>
+            <div className="acct-pop">
+              {admin && <Link href="/admin">🛠 Panel de administración</Link>}
+              <Link href="/cuenta/mis-compras">📚 Mis materiales</Link>
+              <form action={signOut}><button className="out">↪ Salir</button></form>
+            </div>
+          </details>
         ) : (
           <>
             <Link className="btn hide-m" href="/registro" style={{ minHeight: 44 }}>Crear cuenta</Link>

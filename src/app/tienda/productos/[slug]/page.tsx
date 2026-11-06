@@ -70,9 +70,9 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
           )}
           <p style={{ lineHeight: 1.7, whiteSpace: "pre-line", margin: 0 }}>{p.description}</p>
           <div className="facts">
-            <div className="fact" style={{ background: "var(--sage-l)" }}><b>{p.format || "PDF"}</b><span>imprimible A4</span></div>
-            <div className="fact" style={{ background: "var(--honey-l)" }}><b>{p.age_range ?? "Todas"}</b><span>edades</span></div>
-            <div className="fact" style={{ background: "#DDEEF6" }}><b>{p.area === "clinica" ? "Clínica" : "Educativa"}</b><span>área</span></div>
+            <div className="fact" style={{ background: "var(--sage-l)" }}><i aria-hidden>📄</i><div><b>{p.format || "PDF"}</b><span>imprimible en A4</span></div></div>
+            <div className="fact" style={{ background: "var(--honey-l)" }}><i aria-hidden>🧒</i><div><b>{p.age_range ?? "Todas"}</b><span>edades</span></div></div>
+            <div className="fact" style={{ background: "#DDEEF6" }}><i aria-hidden>🎓</i><div><b>{p.area === "clinica" ? "Clínica" : "Educativa"}</b><span>área</span></div></div>
           </div>
           {p.includes?.length > 0 && (<><h3>Qué incluye</h3><ul>{p.includes.map((x, i) => <li key={i}>{x}</li>)}</ul></>)}
           {p.how_to_use?.length > 0 && (<><h3>Cómo usarlo</h3><ol>{p.how_to_use.map((x, i) => <li key={i}>{x}</li>)}</ol></>)}
