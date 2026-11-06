@@ -14,7 +14,8 @@ declare global {
 export default function Turnstile({ onToken }: { onToken: (t: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+    // Clave pública (Site key) de Cloudflare Turnstile del sitio real. La clave secreta vive solo en Supabase.
+    const sitekey = "0x4AAAAAAF20yz7tKJrSz_xR";
     let id: string | undefined;
     const mount = () => {
       if (ref.current && window.turnstile && id === undefined) {
