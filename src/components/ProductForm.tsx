@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Category, Product } from "@/lib/types";
@@ -18,6 +18,28 @@ export default function ProductForm({ categories, product }: { categories: (Cate
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [touched, setTouched] = useState(!!product);
   const [free, setFree] = useState(product ? product.is_free || product.price_cents === 0 : true);
+  const formRef = useRef<HTMLFormElement>(null);
+  const DK = `draft:${product?.id ?? "nuevo"}`;
+  // Borrador automático: si recargas o la pestaña se reinicia, lo escrito se recupera.
+  useEffect(() => {
+    try {
+      const d = JSON.parse(sessionStorage.getItem(DK) || "null");
+      if (!d) return;
+      if (d.f?.title != null) setTitle(d.f.title);
+      if (d.f?.slug) { setSlug(d.f.slug); setTouched(true); }
+      const el = formRef.current?.elements;
+      if (el) for (const [k, v] of Object.entries(d.f ?? {})) { const x = el.namedItem(k) as HTMLInputElement | null; if (x && x.type !== "file" && x.type !== "checkbox") x.value = v as string; }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  function saveDraft() {
+    try {
+      const f: Record<string, string> = {};
+      const el = formRef.current?.elements;
+      if (el) for (const x of Array.from(el) as HTMLInputElement[]) if (x.name && x.type !== "file" && x.type !== "checkbox") f[x.name] = x.value;
+      sessionStorage.setItem(DK, JSON.stringify({ f }));
+    } catch {}
+  }
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const initial = (product?.gallery?.length ? product.gallery : product?.cover_url ? [product.cover_url] : []);
@@ -102,14 +124,15 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     const rm = [...new Set(old.map(pathFromUrl).filter(Boolean) as string[])];
     if (rm.length) await sb.storage.from("portadas").remove(rm);
     setBusy(false);
+    try { sessionStorage.removeItem(DK); } catch {}
     router.push("/admin/materiales");
     router.refresh();
   }
 
   return (
-    <form onSubmit={onSubmit} className="adm-c adm-form">
-      <label className="af">Título<input value={title} required maxLength={120} onChange={(e) => { setTitle(e.target.value); if (!touched) setSlug(slugify(e.target.value)); }} placeholder="Ej.: Tarjetas de emociones para niños" /></label>
-      <label className="af">Enlace (se genera solo)<input value={slug} onChange={(e) => { setTouched(true); setSlug(e.target.value); }} placeholder="tarjetas-de-emociones" /></label>
+    <form ref={formRef} onSubmit={onSubmit} onInput={saveDraft} onChange={saveDraft} className="adm-c adm-form">
+      <label className="af">Título<input name="title" value={title} required maxLength={120} onChange={(e) => { setTitle(e.target.value); if (!touched) setSlug(slugify(e.target.value)); }} placeholder="Ej.: Tarjetas de emociones para niños" /></label>
+      <label className="af">Enlace (se genera solo)<input name="slug" value={slug} onChange={(e) => { setTouched(true); setSlug(e.target.value); }} placeholder="tarjetas-de-emociones" /></label>
       <label className="af">Descripción<textarea name="description" rows={4} defaultValue={product?.description} placeholder="Para qué sirve, a quién va dirigido y cómo usarlo en sesión." /></label>
       <div className="af-row">
         <label className="af">Tipo de terapia
