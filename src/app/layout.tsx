@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: { default: "Materiales de Tatiana · Psicología clínica y educativa", template: "%s · Materiales de Tatiana" },
+  title: { default: "Psicología clínica y educativa · Tatiana Contreras", template: "%s" },
   description: "Fichas, tarjetas y guías de psicología clínica y educativa, creadas por una psicóloga. Descarga inmediata.",
 };
 

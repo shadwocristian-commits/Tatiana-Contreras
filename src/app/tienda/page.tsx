@@ -4,7 +4,7 @@ import { getCategorias, getPagosActivos } from "@/lib/publico";
 import ProductCard from "@/components/ProductCard";
 import type { Category, Product } from "@/lib/types";
 
-export const metadata = { title: "Tienda" };
+export const metadata = { title: "Tienda de materiales" };
 export const dynamic = "force-dynamic";
 
 type SP = { area?: string; cat?: string; q?: string; gratis?: string };
