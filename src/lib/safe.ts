@@ -11,3 +11,11 @@ export function passwordProblem(pw: string): string | null {
   if (!/[A-Za-z]/.test(pw) || !/\d/.test(pw)) return "Combina letras y números.";
   return null;
 }
+
+// Nombres y apellidos: solo letras, espacios, apóstrofe, punto y guion (2 a 60).
+export function nameProblem(label: string, v: string): string | null {
+  const t = v.trim();
+  if (t.length < 2) return `Escribe tus ${label}.`;
+  if (t.length > 60 || !/^[\p{L}][\p{L}' .-]*$/u.test(t)) return `Revisa tus ${label}: usa solo letras.`;
+  return null;
+}

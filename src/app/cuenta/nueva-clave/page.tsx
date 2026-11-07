@@ -16,10 +16,11 @@ export default function NuevaClave() {
     if (pp) return setMsg({ ok: false, t: pp });
     setBusy(true);
     const { error } = await createClient().auth.updateUser({ password: pw });
+    if (!error) await createClient().auth.signOut({ scope: "others" });
     setBusy(false);
     if (error) return setMsg({ ok: false, t: "No se pudo cambiar. El enlace pudo vencer: pide uno nuevo en «Recuperar contraseña»." });
     setDone(true);
-    setMsg({ ok: true, t: "Listo, tu contraseña fue actualizada." });
+    setMsg({ ok: true, t: "Listo, tu contraseña fue actualizada. Por seguridad cerramos tu sesión en los demás dispositivos." });
   }
   return (
     <div className="wrap" style={{ padding: "48px 28px", maxWidth: 520 }}>

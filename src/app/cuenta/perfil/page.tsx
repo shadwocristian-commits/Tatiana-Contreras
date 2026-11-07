@@ -3,18 +3,21 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { createClient, getUser } from "@/lib/supabase/server";
 import { Icon } from "@/components/Icons";
+import { nameProblem } from "@/lib/safe";
 
 export const metadata = { title: "Mi perfil" };
 export const dynamic = "force-dynamic";
 
 async function saveName(formData: FormData) {
   "use server";
-  const name = String(formData.get("name") ?? "").trim().slice(0, 80);
-  if (name.length < 2) redirect("/cuenta/perfil?err=Escribe%20tu%20nombre");
+  const first = String(formData.get("first") ?? "").trim();
+  const last = String(formData.get("last") ?? "").trim();
+  const problem = nameProblem("nombres", first) ?? nameProblem("apellidos", last);
+  if (problem) redirect(`/cuenta/perfil?err=${encodeURIComponent(problem)}`);
   const sb = await createClient();
   const user = await getUser();
   if (!user) redirect("/ingresar?next=/cuenta/perfil");
-  await sb.from("profiles").update({ full_name: name }).eq("id", user.id);
+  await sb.from("profiles").update({ first_names: first, last_names: last, full_name: `${first} ${last}` }).eq("id", user.id);
   revalidatePath("/", "layout");
   redirect("/cuenta/perfil?ok=Datos%20guardados");
 }
@@ -24,14 +27,15 @@ export default async function Perfil({ searchParams }: { searchParams: Promise<{
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) redirect("/ingresar?next=/cuenta/perfil");
-  const { data: p } = await sb.from("profiles").select("full_name,terms_accepted_at,created_at").eq("id", user.id).maybeSingle();
+  const { data: p } = await sb.from("profiles").select("full_name,first_names,last_names,terms_accepted_at,created_at").eq("id", user.id).maybeSingle();
   return (
     <div className="wrap" style={{ padding: "40px 28px 64px", maxWidth: 640 }}>
       <h1 style={{ fontSize: 40 }}>Mi perfil</h1>
       {ok && <div className="msg msg-ok" role="status" style={{ marginTop: 14 }}><Icon n="check_circle" />{ok}</div>}
       {err && <div className="msg msg-err" role="alert" style={{ marginTop: 14 }}><Icon n="error" />{err}</div>}
       <form action={saveName} className="box" style={{ display: "grid", gap: 14, marginTop: 18 }}>
-        <label className="field">Nombre<input name="name" required minLength={2} maxLength={80} defaultValue={p?.full_name ?? ""} autoComplete="name" /></label>
+        <label className="field">Nombres<input name="first" required minLength={2} maxLength={60} defaultValue={p?.first_names ?? p?.full_name ?? ""} autoComplete="given-name" /></label>
+        <label className="field">Apellidos<input name="last" required minLength={2} maxLength={60} defaultValue={p?.last_names ?? ""} autoComplete="family-name" placeholder="Tus apellidos" /></label>
         <label className="field">Correo<input value={user.email ?? ""} readOnly aria-readonly /></label>
         <button className="btn btn-pri" style={{ justifySelf: "start", color: "#fff" }}>Guardar cambios</button>
       </form>

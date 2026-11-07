@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Turnstile from "./Turnstile";
-import { safeNext, passwordProblem, PW_MIN } from "@/lib/safe";
+import { safeNext, passwordProblem, nameProblem, PW_MIN } from "@/lib/safe";
 import { Icon } from "./Icons";
 import Glass from "./Glass";
 
@@ -29,6 +29,8 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
     if (Date.now() < until) return setError(`Demasiados intentos. Espera ${Math.ceil((until - Date.now()) / 1000)} segundos.`);
     if (!token) return setError("Completa la verificación de seguridad.");
     if (mode === "registro") {
+      const np = nameProblem("nombres", String(f.get("first") ?? "")) ?? nameProblem("apellidos", String(f.get("last") ?? ""));
+      if (np) return setError(np);
       const pp = passwordProblem(password);
       if (pp) return setError(pp);
       if (!terms) return setError("Debes aceptar los términos y condiciones.");
@@ -50,13 +52,17 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
         options: {
           captchaToken: token,
           emailRedirectTo: `${location.origin}/auth/callback`,
-          data: { full_name: String(f.get("name") ?? "").trim(), terms_accepted: true },
+          data: {
+            first_names: String(f.get("first") ?? "").trim(),
+            last_names: String(f.get("last") ?? "").trim(),
+            terms_accepted: true,
+          },
         },
       });
       setBusy(false); setToken(""); setTk((k) => k + 1);
       if (err) return setError("No se pudo crear la cuenta. Revisa los datos e inténtalo otra vez.");
       if (data.session) { router.push(next); router.refresh(); }
-      else setOk("Cuenta creada. Revisa tu correo para confirmarla.");
+      else setOk("Cuenta creada. Te enviamos un enlace para confirmar tu correo: ábrelo para activar tu cuenta.");
     }
   }
 
@@ -77,9 +83,12 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
       </Glass>
       <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {mode === "registro" && (
-          <label className="field">Nombre<input name="name" autoComplete="name" required placeholder="Tu nombre" /></label>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <label className="field">Nombres<input name="first" autoComplete="given-name" required maxLength={60} placeholder="Ej. María Fernanda" /></label>
+            <label className="field">Apellidos<input name="last" autoComplete="family-name" required maxLength={60} placeholder="Ej. Quispe Rojas" /></label>
+          </div>
         )}
-        <label className="field">Correo<input name="email" type="email" autoComplete="email" required placeholder="tucorreo@ejemplo.com" /></label>
+        <label className="field">Correo<input name="email" type="email" autoComplete="email" required placeholder="tucorreo@ejemplo.com" />{mode === "registro" && <small style={{ color: "var(--muted)", fontWeight: 600 }}>Te enviaremos un enlace para confirmarlo.</small>}</label>
         <label className="field">Contraseña<input name="password" type="password" autoComplete={mode === "ingresar" ? "current-password" : "new-password"} required minLength={mode === "registro" ? PW_MIN : undefined} placeholder="••••••••" />{mode === "registro" && <small style={{ color: "var(--muted)", fontWeight: 600 }}>Mínimo {PW_MIN} caracteres, con letras y números.</small>}</label>
         {mode === "ingresar" && <Link href="/cuenta/recuperar" style={{ fontSize: 14, fontWeight: 700, textDecoration: "underline", alignSelf: "flex-start" }}>¿Olvidaste tu contraseña?</Link>}
         {mode === "registro" && (
