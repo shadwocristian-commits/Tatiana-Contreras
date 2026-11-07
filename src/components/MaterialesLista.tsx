@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -74,7 +75,7 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
                   <td><span className={`adm-st st-${p.status}`}>{LABEL[p.status]}</span></td>
                   <td style={{ whiteSpace: "nowrap", textAlign: "right", position: "relative" }}>
                     <Link href={`/admin/materiales/${p.id}`} style={{ color: "var(--cacao)", fontWeight: 800, textDecoration: "underline", marginRight: 10 }}>Editar</Link>
-                    <button type="button" className="ml-more" aria-label={`Más acciones para ${p.title}`} aria-expanded={menu === p.id} disabled={busy} onClick={(e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); setPos({ top: r.bottom + 4, right: Math.max(8, window.innerWidth - r.right) }); setMenu(menu === p.id ? null : p.id); }}><Icon n="more_horiz" /></button>
+                    <button type="button" className="ml-more" aria-label={`Más acciones para ${p.title}`} aria-expanded={menu === p.id} disabled={busy} onClick={(e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); setPos({ top: r.bottom + 4 + 230 > window.innerHeight ? Math.max(8, r.top - 4 - 230) : r.bottom + 4, right: Math.max(8, window.innerWidth - r.right) }); setMenu(menu === p.id ? null : p.id); }}><Icon n="more_horiz" /></button>
                   </td>
                 </tr>
               ))}
@@ -82,9 +83,9 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
           </table>
         </div>
       )}
-      {menuRow && (
-      <div className="ml-menu" role="menu" style={{ top: pos.top, right: pos.right }} onClick={(e) => e.stopPropagation()}>
-        {menuRow.status !== "publicado" && menuRow.status !== "archivado" && <Item icon="visibility" label="Publicar" onClick={() => setStatus(menuRow, "publicado")} />}
+      {menuRow && typeof document !== "undefined" && createPortal(
+      <><div className="ml-back0" onClick={() => setMenu(null)} /><div className="ml-menu" role="menu" style={{ top: pos.top, right: pos.right }} onClick={(e) => e.stopPropagation()}>
+        {menuRow.status === "borrador" && <Item icon="visibility" label="Publicar" onClick={() => setStatus(menuRow, "publicado")} />}
         {menuRow.status === "archivado" && <Item icon="unarchive" label="Restaurar como borrador" onClick={() => setStatus(menuRow, "borrador")} />}
         {menuRow.status === "publicado" && <Item icon="production_quantity_limits" label="Marcar como agotado" hint="Se ve en la tienda, sin poder obtenerse" onClick={() => setStatus(menuRow, "agotado")} />}
         {menuRow.status === "agotado" && <Item icon="inventory" label="Volver a publicar" hint="Hay stock otra vez" onClick={() => setStatus(menuRow, "publicado")} />}
@@ -92,7 +93,7 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
         {menuRow.status !== "archivado" && <Item icon="inventory_2" label="Archivar" hint="Lo oculta; se puede restaurar" onClick={() => setStatus(menuRow, "archivado")} />}
         {menuRow.status === "archivado" && <Item icon="delete" label="Eliminar…" danger onClick={() => { setMenu(null); setDel(menuRow); setTyped(""); }} />}
       </div>
-    )}
+     </>, document.body)}
       {del && (
         <div className="ml-back" role="dialog" aria-modal="true" aria-label="Eliminar material" onClick={() => !busy && setDel(null)}>
           <div className="ml-modal" onClick={(e) => e.stopPropagation()}>
