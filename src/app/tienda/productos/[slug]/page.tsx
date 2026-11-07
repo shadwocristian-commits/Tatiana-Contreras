@@ -64,6 +64,8 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
           <div className="price">{priceLabel(p, payments)}</div>
           {owned ? (
             <a className="btn btn-pri" href={`/api/descargas/${p.id}`} style={{ color: "#fff" }}>Descargar material</a>
+          ) : p.status === "agotado" ? (
+            <div className="out-btn">No disponible por ahora · Agotado</div>
           ) : canBuy ? (
             <form action={acquireProduct}>
               <input type="hidden" name="id" value={p.id} />

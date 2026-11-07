@@ -24,10 +24,10 @@ export function tone(slug: string) {
 
 export default function ProductCard({ p, payments }: { p: Product; payments: boolean }) {
   return (
-    <article className="card">
+    <article className={"card" + (p.status === "agotado" ? " is-out" : "")}>
       <div className={`thumb ${tone(p.slug)}${p.cover_url ? " has-img" : ""}`}>
         {p.cover_url && <><img className="fg" src={p.cover_url} alt={`Portada de ${p.title}`} loading="lazy" decoding="async" /></>}
-        <span className="tag">{AREA_LABEL[p.area]}</span>
+        <span className="tag">{p.status === "agotado" ? "Agotado" : AREA_LABEL[p.area]}</span>
         <span className="tag" style={{ background: "var(--ink)", color: "#fff" }}>{p.format}</span>
       </div>
       <div className="card-b">
