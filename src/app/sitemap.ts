@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
-const base = "https://tatiana-contreras.vercel.app";
+const base = "https://tatiana-contreras-psicologa.vercel.app";
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sb = await createClient();
