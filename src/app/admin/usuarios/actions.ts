@@ -41,7 +41,9 @@ export async function sendReset(fd: FormData) {
   const h = await headers();
   const origin = h.get("origin") ?? `https://${h.get("host")}`;
   const email = String(fd.get("email"));
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/callback?next=/cuenta/nueva-clave` });
+  const captchaToken = String(fd.get("token") ?? "");
+  if (!captchaToken) done("err", "No se pudo verificar la seguridad. Inténtalo otra vez.");
+  const { error } = await sb.auth.resetPasswordForEmail(email, { captchaToken, redirectTo: `${origin}/auth/callback?next=/cuenta/nueva-clave` });
   if (error) done("err", "No se pudo enviar el correo. Revisa la configuración de correo.");
   done("ok", `Correo de restablecimiento enviado a ${email}.`);
 }

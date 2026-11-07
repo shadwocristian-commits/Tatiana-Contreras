@@ -3,6 +3,7 @@ import { createClient, getUser } from "@/lib/supabase/server";
 import { Icon } from "@/components/Icons";
 import Glass from "@/components/Glass";
 import { setSuspended, deleteUser, setRole, sendReset } from "./actions";
+import ResetButton from "@/components/ResetButton";
 
 export const dynamic = "force-dynamic";
 type U = { id: string; email: string; full_name: string | null; role: string; created_at: string; banned_until: string | null; confirmed: boolean };
@@ -53,7 +54,7 @@ export default async function Usuarios({ searchParams }: { searchParams: Promise
                         <details className="adm-menu">
                           <summary aria-label={`Acciones para ${u.email}`}>⋯</summary>
                           <div className="adm-pop">
-                            <form action={sendReset}><input type="hidden" name="email" value={u.email} /><button><Icon n="mail" />Enviar correo para restablecer contraseña</button></form>
+                            <ResetButton email={u.email} action={sendReset} />
                             {isAdmin
                               ? <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="cliente" /><button><Icon n="remove_moderator" />Quitar acceso de administración</button></form>
                               : <form action={setRole}><input type="hidden" name="email" value={u.email} /><input type="hidden" name="role" value="admin" /><button><Icon n="admin_panel_settings" />Dar acceso de administración</button></form>}

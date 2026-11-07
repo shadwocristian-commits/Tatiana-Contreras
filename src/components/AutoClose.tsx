@@ -12,6 +12,7 @@ export default function AutoClose() {
   useEffect(() => {
     const click = (e: MouseEvent) => {
       const t = e.target as Element;
+      if (t.closest("[data-keep]")) return;
       const d = t.closest("details.acct, details.adm-menu");
       if (!d) return closeAll();
       if (t.closest("a, button") && !t.closest("summary")) setTimeout(() => d.removeAttribute("open"), 0);
