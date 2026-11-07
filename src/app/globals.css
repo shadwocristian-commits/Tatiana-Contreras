@@ -77,9 +77,11 @@ img{max-width:100%}
 .navb:hover{background:var(--sage-l)}
 .navb[aria-expanded=true]{background:var(--cacao);color:#fff}
 .menu-btn{display:none}
-@media (max-width:1020px){
+.brand span{white-space:nowrap}.actions{flex-wrap:nowrap;flex:none}
+@media (max-width:1280px){
  .hdr-in{flex-wrap:wrap;gap:10px}
- .nav{order:3;width:100%;margin:0;overflow-x:auto;justify-content:flex-start}
+ .brand{flex:1 1 auto}
+ .nav{order:3;flex:0 0 100%;max-width:100%;margin:0;overflow-x:auto;justify-content:center}
  .actions{margin-left:auto}
 }
 /* ===== Inicio ===== */
@@ -334,7 +336,6 @@ main:has(>.auth){display:flex}
  .filters a.on{background:var(--cacao);color:#fff;border-color:var(--cacao)}
 }
 @media (max-width:760px){.nav.glass{display:none}}
-@media (min-width:761px) and (max-width:1020px){.nav.glass{width:100%;margin:0;overflow-x:auto;justify-content:flex-start}}
 .field{min-width:0}.field input,.field textarea,.field select{width:100%;min-width:0;box-sizing:border-box}
 
 /* Galería de producto */
@@ -423,3 +424,7 @@ main:has(>.auth){display:flex}
 
 @media (max-width:900px){.adm{grid-template-rows:auto 1fr;min-height:0}.adm-s{align-self:start}}
 .ml-back0{position:fixed;inset:0;z-index:19}
+
+.ml-meta{display:none;font-weight:600;font-size:12px;color:#6B5444;margin-top:3px}
+@media (max-width:720px){.adm-t .hm{display:none}.ml-meta{display:block}.adm-t td,.adm-t th{padding-left:6px;padding-right:6px}}
+@media (max-width:720px){.ml-more{width:30px;height:30px}.adm-t td:last-child{padding-right:0}.adm-t td:last-child a{margin-right:6px!important}}

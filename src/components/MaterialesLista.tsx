@@ -64,14 +64,14 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
       {shown.length === 0 ? <p style={{ margin: 0 }}>{rows.length === 0 ? "Aún no hay materiales. Crea el primero." : "No hay materiales en esta vista."}</p> : (
         <div style={{ overflowX: "auto" }}>
           <table className="adm-t">
-            <thead><tr><th>Título</th><th>Terapia</th><th>Autor</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Título</th><th className="hm">Terapia</th><th className="hm">Autor</th><th className="hm">Precio</th><th>Estado</th><th></th></tr></thead>
             <tbody>
               {shown.map((p) => (
                 <tr key={p.id}>
-                  <td><b>{p.title}</b></td>
-                  <td>{p.categories?.name ?? "—"}</td>
-                  <td>{p.autor ?? "—"}</td>
-                  <td>{p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`}</td>
+                  <td><b>{p.title}</b><small className="ml-meta">{[p.categories?.name, p.autor, p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`].filter(Boolean).join(" · ")}</small></td>
+                  <td className="hm">{p.categories?.name ?? "—"}</td>
+                  <td className="hm">{p.autor ?? "—"}</td>
+                  <td className="hm">{p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`}</td>
                   <td><span className={`adm-st st-${p.status}`}>{LABEL[p.status]}</span></td>
                   <td style={{ whiteSpace: "nowrap", textAlign: "right", position: "relative" }}>
                     <Link href={`/admin/materiales/${p.id}`} style={{ color: "var(--cacao)", fontWeight: 800, textDecoration: "underline", marginRight: 10 }}>Editar</Link>
