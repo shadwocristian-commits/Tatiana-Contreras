@@ -28,6 +28,9 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     setError("");
     const f = new FormData(e.currentTarget);
     const sb = createClient();
+    const { data: ud } = await sb.auth.getUser();
+    const uid = ud.user?.id;
+    if (!uid) return setError("Tu sesión expiró. Vuelve a ingresar.");
     const file = f.get("file") as File | null;
     const finalSlug = slugify(slug || title);
     if (!finalSlug) return setError("Escribe un título.");
@@ -43,7 +46,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     // Subir imágenes nuevas en paralelo; si alguna falla, se cancela todo sin guardar a medias.
     const fresh = imgs.filter((x) => x.blob);
     const up = await Promise.allSettled(fresh.map(async (x, n) => {
-      const path = `${finalSlug}-${Date.now()}-${n}-${x.id.slice(0, 6)}_${x.w}x${x.h}.${x.ext}`;
+      const path = `${uid}/${finalSlug}-${Date.now()}-${n}-${x.id.slice(0, 6)}_${x.w}x${x.h}.${x.ext}`;
       const { error: err } = await sb.storage.from("portadas").upload(path, x.blob!, { contentType: x.ext === "webp" ? "image/webp" : "image/jpeg", cacheControl: "31536000", upsert: false });
       if (err) throw err;
       return { id: x.id, path, url: sb.storage.from("portadas").getPublicUrl(path).data.publicUrl };
@@ -59,7 +62,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     if (file && file.size > 0) {
       if (!/\.(pdf|zip)$/i.test(file.name)) { setBusy(false); return setError("El material debe ser un archivo PDF o ZIP."); }
       if (file.size > 50 * 1024 * 1024) { setBusy(false); return setError("El archivo pesa más de 50 MB."); }
-      const path = `${finalSlug}/${safeName(file.name)}`;
+      const path = `${uid}/${finalSlug}/${safeName(file.name)}`;
       const { error: err } = await sb.storage.from("materiales").upload(path, file, { contentType: file.type || "application/pdf", upsert: true });
       if (err) { setBusy(false); return setError("No se pudo subir el archivo: " + err.message); }
       file_path = path;
