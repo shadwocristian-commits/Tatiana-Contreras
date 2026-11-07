@@ -13,7 +13,7 @@ export default function Recuperar() {
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const email = String(new FormData(e.currentTarget).get("email") ?? "").trim();
-    if (!token) return setMsg({ ok: false, t: "Completa la verificación de seguridad." });
+    if (!token) { setTk((k) => k + 1); return setMsg({ ok: false, t: "Estamos verificando que eres una persona. Espera unos segundos y vuelve a pulsar el botón." }); }
     setBusy(true);
     await createClient().auth.resetPasswordForEmail(email, { captchaToken: token, redirectTo: `${location.origin}/auth/callback?next=/cuenta/nueva-clave` });
     setBusy(false); setToken(""); setTk((k) => k + 1);

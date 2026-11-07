@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -19,6 +19,8 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
   const [tk, setTk] = useState(0);
   const [fails, setFails] = useState(0);
   const [until, setUntil] = useState(0);
+  const [tsVisible, setTsVisible] = useState(false);
+  const onTsError = useCallback(() => setTsVisible(true), []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
     const email = String(f.get("email") ?? "").trim();
     const password = String(f.get("password") ?? "");
     if (Date.now() < until) return setError(`Demasiados intentos. Espera ${Math.ceil((until - Date.now()) / 1000)} segundos.`);
-    if (!token) return setError("Completa la verificación de seguridad.");
+    if (!token) { setTsVisible(true); setTk((k) => k + 1); return setError("Estamos verificando que eres una persona. Espera unos segundos, marca la casilla de verificación si aparece y vuelve a pulsar el botón."); }
     if (mode === "registro") {
       const np = nameProblem("nombres", String(f.get("first") ?? "")) ?? nameProblem("apellidos", String(f.get("last") ?? ""));
       if (np) return setError(np);
@@ -97,7 +99,7 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
             <span>Acepto los <Link href="/info/terminos" target="_blank" style={{ textDecoration: "underline" }}>términos y condiciones</Link> y la <Link href="/info/privacidad" target="_blank" style={{ textDecoration: "underline" }}>política de privacidad</Link>.</span>
           </label>
         )}
-        <Turnstile key={tk} onToken={setToken} />
+        <Turnstile key={tk} onToken={setToken} onError={onTsError} visible={tsVisible} />
         {error && <div className="msg msg-err" role="alert"><Icon n="error" />{error}</div>}
         {ok && <div className="msg msg-ok" role="status"><Icon n="check_circle" />{ok}</div>}
         <button className="btn btn-pri" type="submit" disabled={busy}>{busy ? "Un momento…" : mode === "ingresar" ? "Ingresar" : "Crear cuenta"}</button>

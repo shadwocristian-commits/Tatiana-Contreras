@@ -11,7 +11,7 @@ declare global {
 }
 
 // Captcha de Cloudflare (gratis). Entrega un token que Supabase valida al ingresar.
-export default function Turnstile({ onToken }: { onToken: (t: string) => void }) {
+export default function Turnstile({ onToken, onError, visible = false }: { onToken: (t: string) => void; onError?: () => void; visible?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // Clave pública (Site key) de Cloudflare Turnstile del sitio real. La clave secreta vive solo en Supabase.
@@ -24,7 +24,11 @@ export default function Turnstile({ onToken }: { onToken: (t: string) => void })
           callback: onToken,
           size: "flexible",
           theme: "light",
-          appearance: "interaction-only",
+          appearance: visible ? "always" : "interaction-only",
+          "refresh-expired": "auto",
+          retry: "auto",
+          "error-callback": () => { onError?.(); return true; },
+          "timeout-callback": () => { onError?.(); },
           language: "es",
           "expired-callback": () => onToken(""),
         });
@@ -41,6 +45,6 @@ export default function Turnstile({ onToken }: { onToken: (t: string) => void })
     return () => {
       if (id !== undefined && window.turnstile) window.turnstile.remove(id);
     };
-  }, [onToken]);
+  }, [onToken, onError, visible]);
   return <div ref={ref} className="ts" aria-label="Verificación de seguridad" />;
 }
