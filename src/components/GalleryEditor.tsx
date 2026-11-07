@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { compressImage, MAX_IMGS } from "@/lib/img";
 import { Icon } from "@/components/Icons";
 
-export type GItem = { id: string; url?: string; blob?: Blob; ext?: string; preview: string; size?: number };
+export type GItem = { id: string; url?: string; blob?: Blob; ext?: string; preview: string; size?: number; w?: number; h?: number };
 
 export default function GalleryEditor({ items, setItems, title }: { items: GItem[]; setItems: (f: (p: GItem[]) => GItem[]) => void; title: string }) {
   const refC = useRef<HTMLInputElement>(null);
@@ -15,7 +15,7 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
 
   async function proc(files: File[], errs: string[]) {
     const done = await Promise.all(files.map(async (f) => {
-      try { const r = await compressImage(f); return { id: crypto.randomUUID(), blob: r.blob, ext: r.ext, preview: URL.createObjectURL(r.blob), size: r.blob.size } as GItem; }
+      try { const r = await compressImage(f); return { id: crypto.randomUUID(), blob: r.blob, ext: r.ext, w: r.w, h: r.h, preview: URL.createObjectURL(r.blob), size: r.blob.size } as GItem; }
       catch (e) { errs.push((e as Error).message); return null; }
     }));
     return done.filter(Boolean) as GItem[];
@@ -42,7 +42,7 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
 
   return (
     <div className="ge">
-      <div className="ge-h"><b>Portada</b><small>Obligatoria · es la imagen principal y la que se ve en la tienda · ideal 1200×1500 px (vertical)</small></div>
+      <div className="ge-h"><b>Portada</b><small>Obligatoria · se ve en la tienda recortada a este marco · ideal 1200×1500 px (vertical)</small></div>
       <div className="ge-grid ge-one">
         {cover ? (
           <div className="ge-it is-cover">

@@ -43,7 +43,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     // Subir imágenes nuevas en paralelo; si alguna falla, se cancela todo sin guardar a medias.
     const fresh = imgs.filter((x) => x.blob);
     const up = await Promise.allSettled(fresh.map(async (x, n) => {
-      const path = `${finalSlug}-${Date.now()}-${n}-${x.id.slice(0, 6)}.${x.ext}`;
+      const path = `${finalSlug}-${Date.now()}-${n}-${x.id.slice(0, 6)}_${x.w}x${x.h}.${x.ext}`;
       const { error: err } = await sb.storage.from("portadas").upload(path, x.blob!, { contentType: x.ext === "webp" ? "image/webp" : "image/jpeg", cacheControl: "31536000", upsert: false });
       if (err) throw err;
       return { id: x.id, path, url: sb.storage.from("portadas").getPublicUrl(path).data.publicUrl };
