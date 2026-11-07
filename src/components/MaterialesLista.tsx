@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Icon } from "@/components/Icons";
 import { pathFromUrl } from "@/lib/img";
 
-export type Fila = { id: string; title: string; status: "publicado" | "borrador" | "agotado" | "archivado"; is_free: boolean; price_cents: number; area: string; cover_url: string | null; gallery: string[] | null; file_path: string | null; categories: { name: string } | null };
+export type Fila = { id: string; title: string; status: "publicado" | "borrador" | "agotado" | "archivado"; is_free: boolean; price_cents: number; area: string; cover_url: string | null; gallery: string[] | null; file_path: string | null; created_by?: string | null; autor?: string; categories: { name: string } | null };
 
 const TABS = [["todos", "Todos"], ["publicado", "Publicados"], ["borrador", "Borradores"], ["agotado", "Agotados"], ["archivado", "Archivados"]] as const;
 const LABEL: Record<string, string> = { publicado: "Publicado", borrador: "Borrador", agotado: "Agotado", archivado: "Archivado" };
@@ -63,12 +63,13 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
       {shown.length === 0 ? <p style={{ margin: 0 }}>{rows.length === 0 ? "Aún no hay materiales. Crea el primero." : "No hay materiales en esta vista."}</p> : (
         <div style={{ overflowX: "auto" }}>
           <table className="adm-t">
-            <thead><tr><th>Título</th><th>Terapia</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Título</th><th>Terapia</th><th>Autor</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
             <tbody>
               {shown.map((p) => (
                 <tr key={p.id}>
                   <td><b>{p.title}</b></td>
                   <td>{p.categories?.name ?? "—"}</td>
+                  <td>{p.autor ?? "—"}</td>
                   <td>{p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`}</td>
                   <td><span className={`adm-st st-${p.status}`}>{LABEL[p.status]}</span></td>
                   <td style={{ whiteSpace: "nowrap", textAlign: "right", position: "relative" }}>

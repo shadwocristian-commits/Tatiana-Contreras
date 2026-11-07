@@ -1,17 +1,16 @@
 import Link from "next/link";
-import { createClient, getUser } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Resumen() {
   const sb = await createClient();
-  const me = (await getUser())?.id ?? "";
   const since = new Date(Date.now() - 14 * 86400000).toISOString();
-  const { count: nProd } = await sb.from("products").select("*", { count: "exact", head: true }).eq("created_by", me);
-  const { count: nDl } = await sb.from("downloads").select("id,products!inner(created_by)", { count: "exact", head: true }).eq("products.created_by", me);
+  const { count: nProd } = await sb.from("products").select("*", { count: "exact", head: true });
+  const { count: nDl } = await sb.from("downloads").select("*", { count: "exact", head: true });
   const { count: nUsers } = await sb.from("profiles").select("*", { count: "exact", head: true });
   const { count: nPend } = await sb.from("reviews").select("*", { count: "exact", head: true }).eq("status", "pending");
-  const { data: dls } = await sb.from("downloads").select("created_at,products!inner(created_by)").eq("products.created_by", me).gte("created_at", since);
+  const { data: dls } = await sb.from("downloads").select("created_at").gte("created_at", since);
   const { data: cats } = await sb.from("categories").select("id,name").order("sort");
-  const { data: prods } = await sb.from("products").select("category_id").eq("created_by", me);
+  const { data: prods } = await sb.from("products").select("category_id");
 
   const days = Array.from({ length: 14 }, (_, i) => new Date(Date.now() - (13 - i) * 86400000).toISOString().slice(0, 10));
   const perDay = days.map((d) => (dls ?? []).filter((x: { created_at: string }) => x.created_at.slice(0, 10) === d).length);
