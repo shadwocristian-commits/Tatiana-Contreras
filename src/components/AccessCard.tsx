@@ -83,7 +83,7 @@ export default function AccessCard({ initial = "ingresar", next = "/tienda" }: {
       </Glass>
       <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {mode === "registro" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 12 }}>
             <label className="field">Nombres<input name="first" autoComplete="given-name" required maxLength={60} placeholder="Ej. María Fernanda" /></label>
             <label className="field">Apellidos<input name="last" autoComplete="family-name" required maxLength={60} placeholder="Ej. Quispe Rojas" /></label>
           </div>
