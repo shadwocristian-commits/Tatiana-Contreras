@@ -35,6 +35,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
       if (!/\.(pdf|zip)$/i.test(file.name)) return setError("El material debe ser un archivo PDF o ZIP.");
       if (file.size > 50 * 1024 * 1024) return setError("El archivo pesa más de 50 MB.");
     }
+    if (!imgs.length) return setError("Sube la portada del material.");
     if (f.get("is_published") === "on" && !file?.size && !product?.file_path) return setError("Para publicar necesitas subir el archivo del material.");
     setBusy(true);
     let file_path = product?.file_path ?? null;
