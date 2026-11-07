@@ -5,7 +5,7 @@ const dims = (u: string) => { const m = u.match(/_(\d+)x(\d+)\.\w+$/); return m 
 const clamp = (r: number) => Math.min(1.5, Math.max(0.75, r || 0.8));
 import { Icon } from "@/components/Icons";
 
-export default function Gallery({ images, title }: { images: string[]; title: string }) {
+export default function Gallery({ images, title, alts }: { images: string[]; title: string; alts?: string[] | null }) {
   const [i, setI] = useState(0);
   const x0 = useRef<number | null>(null);
   const n = images.length;
@@ -22,7 +22,7 @@ export default function Gallery({ images, title }: { images: string[]; title: st
           {images.map((u, k) => (
             <div className="gal-s" key={u}>
               <img className="bg" src={u} alt="" aria-hidden draggable={false} loading={k === 0 ? "eager" : "lazy"} decoding="async" />
-              <img className="fg" onLoad={(e) => { const t = e.currentTarget; if (!rt[k] && t.naturalHeight) setRt((a) => { const b = [...a]; b[k] = t.naturalWidth / t.naturalHeight; return b; }); }} src={u} alt={`${title} — imagen ${k + 1} de ${n}`} draggable={false}
+              <img className="fg" onLoad={(e) => { const t = e.currentTarget; if (!rt[k] && t.naturalHeight) setRt((a) => { const b = [...a]; b[k] = t.naturalWidth / t.naturalHeight; return b; }); }} src={u} alt={alts?.[k] || `${title} — imagen ${k + 1} de ${n}`} draggable={false}
                 loading={k === 0 ? "eager" : "lazy"} fetchPriority={k === 0 ? "high" : "auto"} decoding="async" />
             </div>
           ))}

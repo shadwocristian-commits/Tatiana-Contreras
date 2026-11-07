@@ -22,6 +22,7 @@ export default function Footer() {
             <Link href="/#guia"><Icon n="help" />Cómo funciona</Link>
             <Link href="/info/terminos"><Icon n="gavel" />Términos y condiciones</Link>
             <Link href="/info/privacidad"><Icon n="lock" />Política de privacidad</Link>
+            <Link href="/libro-de-reclamaciones"><Icon n="menu_book" />Libro de Reclamaciones</Link>
           </div>
         </div>
         <p className="aviso">

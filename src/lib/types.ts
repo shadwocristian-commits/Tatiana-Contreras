@@ -16,6 +16,7 @@ export type Product = {
   is_sample: boolean;
   cover_url: string | null;
   gallery?: string[] | null;
+  gallery_alt?: string[] | null;
   status?: "publicado" | "borrador" | "agotado" | "archivado";
   rating_avg: number;
   rating_count: number;

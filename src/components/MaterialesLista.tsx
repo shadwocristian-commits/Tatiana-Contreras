@@ -22,6 +22,8 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
   const [typed, setTyped] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [sel, setSel] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => setSel((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
   const count = (k: string) => (k === "todos" ? rows.filter((r) => r.status !== "archivado").length : rows.filter((r) => r.status === k).length);
   const shown = useMemo(() => rows.filter((r) => (tab === "todos" ? r.status !== "archivado" : r.status === tab) && r.title.toLowerCase().includes(q.trim().toLowerCase())), [rows, tab, q]);
@@ -32,6 +34,26 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
     setBusy(false);
     if (error) return setMsg("No se pudo cambiar el estado: " + error.message);
     router.refresh();
+  }
+  async function bulk(status: Fila["status"]) {
+    if (!sel.size) return;
+    setMsg(""); setBusy(true);
+    const { error } = await createClient().from("products").update({ status }).in("id", [...sel]);
+    setBusy(false);
+    if (error) return setMsg("No se pudo cambiar el estado: " + error.message);
+    setSel(new Set()); router.refresh();
+  }
+  async function duplicar(r: Fila) {
+    setMenu(null); setMsg(""); setBusy(true);
+    const sb = createClient();
+    const { data: o, error: e1 } = await sb.from("products").select("*").eq("id", r.id).maybeSingle();
+    if (e1 || !o) { setBusy(false); return setMsg("No se pudo leer el material para duplicarlo."); }
+    const { id: _i, created_at: _c, updated_at: _u, rating_avg: _ra, rating_count: _rc, cover_url: _cv, gallery: _g, gallery_alt: _ga, file_path: _fp, created_by: _cb, ...rest } = o as Record<string, unknown>;
+    void [_i, _c, _u, _ra, _rc, _cv, _g, _ga, _fp, _cb];
+    const { data: n, error } = await sb.from("products").insert({ ...rest, slug: `${String(o.slug).slice(0, 55)}-copia-${Date.now().toString(36)}`, title: `${String(o.title).slice(0, 100)} (copia)`, status: "borrador", is_published: false, is_sample: false, gallery: [], gallery_alt: [] }).select("id").single();
+    setBusy(false);
+    if (error || !n) return setMsg("No se pudo duplicar: " + (error?.message ?? ""));
+    router.push(`/admin/materiales/${n.id}`);
   }
   async function remove() {
     if (!del || typed.trim().toUpperCase() !== "ELIMINAR") return;
@@ -60,14 +82,24 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
         {TABS.map(([k, l]) => <button key={k} type="button" className={"ml-tab" + (tab === k ? " on" : "")} onClick={(e) => { e.stopPropagation(); setTab(k); }}>{l}<i>{count(k)}</i></button>)}
       </div>
       <label className="ml-s"><Icon n="search" /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por título…" aria-label="Buscar material" /></label>
+      {sel.size > 0 && (
+        <div className="ml-bulk" role="toolbar" aria-label="Acciones para los seleccionados">
+          <b>{sel.size} seleccionado{sel.size > 1 ? "s" : ""}</b>
+          <button type="button" disabled={busy} onClick={() => bulk("agotado")}>Marcar agotado</button>
+          <button type="button" disabled={busy} onClick={() => bulk("borrador")}>Pasar a borrador</button>
+          <button type="button" disabled={busy} onClick={() => bulk("archivado")}>Archivar</button>
+          <button type="button" onClick={() => setSel(new Set())}>Cancelar</button>
+        </div>
+      )}
       {msg && <div className="msg msg-err" role="alert">{msg}</div>}
       {shown.length === 0 ? <p style={{ margin: 0 }}>{rows.length === 0 ? "Aún no hay materiales. Crea el primero." : "No hay materiales en esta vista."}</p> : (
         <div style={{ overflowX: "auto" }}>
           <table className="adm-t">
-            <thead><tr><th>Título</th><th className="hm">Terapia</th><th className="hm">Autor</th><th className="hm">Precio</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th style={{ width: 28 }}><input type="checkbox" aria-label="Seleccionar todos" checked={shown.length > 0 && shown.every((r) => sel.has(r.id))} onChange={(e) => setSel(e.target.checked ? new Set(shown.map((r) => r.id)) : new Set())} /></th><th>Título</th><th className="hm">Terapia</th><th className="hm">Autor</th><th className="hm">Precio</th><th>Estado</th><th></th></tr></thead>
             <tbody>
               {shown.map((p) => (
                 <tr key={p.id}>
+                  <td><input type="checkbox" aria-label={`Seleccionar ${p.title}`} checked={sel.has(p.id)} onChange={() => toggle(p.id)} /></td>
                   <td><b>{p.title}</b><small className="ml-meta">{[p.categories?.name, p.autor, p.is_free || p.price_cents === 0 ? "Gratis" : `S/ ${(p.price_cents / 100).toFixed(2)}`].filter(Boolean).join(" · ")}</small></td>
                   <td className="hm">{p.categories?.name ?? "—"}</td>
                   <td className="hm">{p.autor ?? "—"}</td>
@@ -90,6 +122,7 @@ export default function MaterialesLista({ rows }: { rows: Fila[] }) {
         {menuRow.status === "publicado" && <Item icon="production_quantity_limits" label="Marcar como agotado" hint="Se ve en la tienda, sin poder obtenerse" onClick={() => setStatus(menuRow, "agotado")} />}
         {menuRow.status === "agotado" && <Item icon="inventory" label="Volver a publicar" hint="Hay stock otra vez" onClick={() => setStatus(menuRow, "publicado")} />}
         {(menuRow.status === "publicado" || menuRow.status === "agotado") && <Item icon="visibility_off" label="Pasar a borrador" onClick={() => setStatus(menuRow, "borrador")} />}
+        <Item icon="content_copy" label="Duplicar" hint="Copia los textos como borrador" onClick={() => duplicar(menuRow)} />
         {menuRow.status !== "archivado" && <Item icon="inventory_2" label="Archivar" hint="Lo oculta; se puede restaurar" onClick={() => setStatus(menuRow, "archivado")} />}
         {menuRow.status === "archivado" && <Item icon="delete" label="Eliminar…" danger onClick={() => { setMenu(null); setDel(menuRow); setTyped(""); }} />}
       </div>

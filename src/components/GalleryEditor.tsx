@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { compressImage, MAX_IMGS } from "@/lib/img";
 import { Icon } from "@/components/Icons";
 
-export type GItem = { id: string; url?: string; blob?: Blob; ext?: string; preview: string; size?: number; w?: number; h?: number };
+export type GItem = { id: string; url?: string; blob?: Blob; ext?: string; preview: string; size?: number; w?: number; h?: number; alt?: string };
 
 export default function GalleryEditor({ items, setItems, title }: { items: GItem[]; setItems: (f: (p: GItem[]) => GItem[]) => void; title: string }) {
   const refC = useRef<HTMLInputElement>(null);
@@ -38,6 +38,7 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
   }
   const move = (i: number, d: number) => setItems((p) => { const a = [...p], j = i + d; if (j < 1 || j >= a.length) return a; [a[i], a[j]] = [a[j], a[i]]; return a; });
   const mkCover = (i: number) => setItems((p) => [p[i], ...p.filter((_, k) => k !== i)]);
+  const setAlt = (i: number, v: string) => setItems((p) => p.map((x, k) => (k === i ? { ...x, alt: v } : x)));
   const del = (i: number) => setItems((p) => p.filter((_, k) => k !== i));
 
   return (
@@ -45,12 +46,12 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
       <div className="ge-h"><b>Portada</b><small>Obligatoria · se ve en la tienda recortada a este marco · ideal 1200×1500 px (vertical)</small></div>
       <div className="ge-grid ge-one">
         {cover ? (
-          <div className="ge-it is-cover">
+          <div className="ge-cell"><div className="ge-it is-cover">
             <img src={cover.preview} alt={`Portada de ${title || "material"}`} />
             <span className="ge-badge">Portada</span>
             <button type="button" className="ge-x" aria-label="Quitar portada" onClick={() => del(0)}><Icon n="close" /></button>
             <div className="ge-bar"><button type="button" onClick={() => refC.current?.click()}>Cambiar portada</button></div>
-          </div>
+          </div><input className="ge-alt" maxLength={140} value={cover.alt ?? ""} onChange={(e) => setAlt(0, e.target.value)} placeholder="Descripción de la imagen (opcional)" aria-label="Descripción de la imagen" /></div>
         ) : (
           <button type="button" className="ge-add" onClick={() => refC.current?.click()} disabled={work}>
             <Icon n="image" /><span>{work ? "Procesando…" : "Sube tu portada"}</span><small>JPG, PNG o WebP · se optimiza sola</small>
@@ -60,7 +61,7 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
       <div className="ge-h" style={{ marginTop: 18 }}><b>Más imágenes</b><small>{extras.length}/{MAX_IMGS - 1} · vistas del contenido por dentro (opcional)</small></div>
       <div className="ge-grid">
         {extras.map((it, k) => { const i = k + 1; return (
-          <div key={it.id} className="ge-it">
+          <div key={it.id} className="ge-cell"><div className="ge-it">
             <img src={it.preview} alt={`${title || "Material"} — imagen ${i + 1}`} loading="lazy" />
             <button type="button" className="ge-x" aria-label="Quitar imagen" onClick={() => del(i)}><Icon n="close" /></button>
             <div className="ge-bar">
@@ -68,7 +69,7 @@ export default function GalleryEditor({ items, setItems, title }: { items: GItem
               <button type="button" className="ge-mk" onClick={() => mkCover(i)}>Hacer portada</button>
               <button type="button" aria-label="Mover a la derecha" disabled={i === items.length - 1} onClick={() => move(i, 1)}><Icon n="chevron_right" /></button>
             </div>
-          </div>
+          </div><input className="ge-alt" maxLength={140} value={it.alt ?? ""} onChange={(e) => setAlt(i, e.target.value)} placeholder="Descripción de la imagen (opcional)" aria-label="Descripción de la imagen" /></div>
         ); })}
         {items.length < MAX_IMGS && (
           <button type="button" className="ge-add" onClick={() => refX.current?.click()} disabled={work || !cover}>

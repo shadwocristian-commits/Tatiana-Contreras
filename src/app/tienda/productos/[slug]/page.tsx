@@ -52,7 +52,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
       <div style={{ padding: "28px 0 0", fontSize: 14 }}><Link href="/">Inicio</Link> / <Link href="/tienda">Tienda</Link> / <b>{p.title}</b></div>
       <div className="pd">
         <div className="pd-cover" style={{ flex: "1 1 520px" }}>
-          {imgs.length ? <Gallery images={imgs} title={p.title} /> : <div className="pd-ph"><span>{p.format || "PDF"} · {p.area === "clinica" ? "Clínica" : "Educativa"}</span><b>{p.title}</b></div>}
+          {imgs.length ? <Gallery images={imgs} title={p.title} alts={p.gallery?.length ? p.gallery_alt : null} /> : <div className="pd-ph"><span>{p.format || "PDF"} · {p.area === "clinica" ? "Clínica" : "Educativa"}</span><b>{p.title}</b></div>}
         </div>
         <div className="pd-info">
           <span className="tag">{p.area === "clinica" ? "Clínica" : "Educativa"}{p.is_sample ? " · Ejemplo" : ""}</span>

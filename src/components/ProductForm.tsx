@@ -32,6 +32,30 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Aviso de edición simultánea: avisa si otra persona del equipo está editando este material.
+  const [otro, setOtro] = useState("");
+  useEffect(() => {
+    if (!product) return;
+    const sb = createClient();
+    let alive = true, uid = "", nombre = "";
+    async function beat() {
+      if (!alive) return;
+      if (!uid) {
+        const { data: u } = await sb.auth.getUser(); uid = u.user?.id ?? "";
+        if (!uid) return;
+        const { data: pr } = await sb.from("profiles").select("full_name").eq("id", uid).maybeSingle();
+        nombre = pr?.full_name ?? "Alguien";
+      }
+      await sb.from("product_editing").upsert({ product_id: product!.id, user_id: uid, user_name: nombre, at: new Date().toISOString() });
+      const { data: o } = await sb.from("product_editing").select("user_name").eq("product_id", product!.id).neq("user_id", uid).gt("at", new Date(Date.now() - 75000).toISOString()).limit(1);
+      if (alive) setOtro(o?.[0]?.user_name ?? "");
+    }
+    beat();
+    const t = setInterval(beat, 30000);
+    const bye = () => { if (uid) sb.from("product_editing").delete().eq("product_id", product!.id).eq("user_id", uid); };
+    window.addEventListener("pagehide", bye);
+    return () => { alive = false; clearInterval(t); window.removeEventListener("pagehide", bye); bye(); };
+  }, [product]);
   function saveDraft() {
     try {
       const f: Record<string, string> = {};
@@ -43,7 +67,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const initial = (product?.gallery?.length ? product.gallery : product?.cover_url ? [product.cover_url] : []);
-  const [imgs, setImgs] = useState<GItem[]>(initial.map((u) => ({ id: u, url: u, preview: u })));
+  const [imgs, setImgs] = useState<GItem[]>(initial.map((u, k) => ({ id: u, url: u, preview: u, alt: product?.gallery_alt?.[k] ?? "" })));
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -108,6 +132,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
       is_published: publish,
       cover_url,
       gallery,
+      gallery_alt: imgs.map((x) => (x.alt ?? "").trim().slice(0, 140)),
       file_path,
     };
     const { error: err } = product
@@ -131,6 +156,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
 
   return (
     <form ref={formRef} onSubmit={onSubmit} onInput={saveDraft} onChange={saveDraft} className="adm-c adm-form">
+      {otro && <div className="msg msg-err" role="status">⚠ {otro} está editando este material ahora. Si guardas los dos, se quedará lo último que se guarde.</div>}
       <label className="af">Título<input name="title" value={title} required maxLength={120} onChange={(e) => { setTitle(e.target.value); if (!touched) setSlug(slugify(e.target.value)); }} placeholder="Ej.: Tarjetas de emociones para niños" /></label>
       <label className="af">Enlace (se genera solo)<input name="slug" value={slug} onChange={(e) => { setTouched(true); setSlug(e.target.value); }} placeholder="tarjetas-de-emociones" /></label>
       <label className="af">Descripción<textarea name="description" rows={4} defaultValue={product?.description} placeholder="Para qué sirve, a quién va dirigido y cómo usarlo en sesión." /></label>
