@@ -1,3 +1,4 @@
+import Gallery from "@/components/Gallery";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient, getUser } from "@/lib/supabase/server";
@@ -43,6 +44,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
   const reviews = (rv ?? []) as Review[];
   const dist = [5, 4, 3, 2, 1].map((n) => ({ n, c: reviews.filter((r) => r.rating === n).length }));
   const related = (relData ?? []) as Product[];
+  const imgs = (p.gallery?.length ? p.gallery : p.cover_url ? [p.cover_url] : []).filter(Boolean);
   const canBuy = !payments || p.is_free || p.price_cents === 0;
 
   return (
@@ -50,7 +52,7 @@ export default async function Ficha({ params }: { params: Promise<{ slug: string
       <div style={{ padding: "28px 0 0", fontSize: 14 }}><Link href="/">Inicio</Link> / <Link href="/tienda">Tienda</Link> / <b>{p.title}</b></div>
       <div className="pd">
         <div className="pd-cover" style={{ flex: "1 1 520px" }}>
-          {p.cover_url ? <img src={p.cover_url} alt={p.title} /> : <div className="pd-ph"><span>{p.format || "PDF"} · {p.area === "clinica" ? "Clínica" : "Educativa"}</span><b>{p.title}</b></div>}
+          {imgs.length ? <Gallery images={imgs} title={p.title} /> : <div className="pd-ph"><span>{p.format || "PDF"} · {p.area === "clinica" ? "Clínica" : "Educativa"}</span><b>{p.title}</b></div>}
         </div>
         <div className="pd-info">
           <span className="tag">{p.area === "clinica" ? "Clínica" : "Educativa"}{p.is_sample ? " · Ejemplo" : ""}</span>

@@ -15,6 +15,7 @@ export type Product = {
   is_free: boolean;
   is_sample: boolean;
   cover_url: string | null;
+  gallery?: string[] | null;
   rating_avg: number;
   rating_count: number;
   file_path: string | null;
