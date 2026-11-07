@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getUser } from "@/lib/supabase/server";
 
 type Row = { id: string; title: string; is_published: boolean; is_free: boolean; price_cents: number; area: string; categories: { name: string } | null };
 
 export default async function Materiales() {
   const sb = await createClient();
-  const { data } = await sb.from("products").select("id,title,is_published,is_free,price_cents,area,categories(name)").order("created_at", { ascending: false });
+  const me = (await getUser())?.id ?? "";
+  const { data } = await sb.from("products").select("id,title,is_published,is_free,price_cents,area,categories(name)").eq("created_by", me).order("created_at", { ascending: false });
   const rows = (data ?? []) as unknown as Row[];
   return (
     <>
