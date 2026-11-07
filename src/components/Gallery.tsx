@@ -15,8 +15,11 @@ export default function Gallery({ images, title }: { images: string[]; title: st
         onTouchEnd={(e) => { if (x0.current == null) return; const d = e.changedTouches[0].clientX - x0.current; x0.current = null; if (Math.abs(d) > 40) go(i + (d < 0 ? 1 : -1)); }}>
         <div className="gal-track" style={{ transform: `translateX(-${i * 100}%)` }}>
           {images.map((u, k) => (
-            <img key={u} src={u} alt={`${title} — imagen ${k + 1} de ${n}`} draggable={false}
-              loading={k === 0 ? "eager" : "lazy"} fetchPriority={k === 0 ? "high" : "auto"} decoding="async" />
+            <div className="gal-s" key={u}>
+              <img className="bg" src={u} alt="" aria-hidden draggable={false} loading={k === 0 ? "eager" : "lazy"} decoding="async" />
+              <img className="fg" src={u} alt={`${title} — imagen ${k + 1} de ${n}`} draggable={false}
+                loading={k === 0 ? "eager" : "lazy"} fetchPriority={k === 0 ? "high" : "auto"} decoding="async" />
+            </div>
           ))}
         </div>
         {n > 1 && <>
