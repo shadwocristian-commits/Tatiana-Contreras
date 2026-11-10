@@ -1,6 +1,6 @@
 // Servicio de la tienda: muestra una pantalla propia cuando no hay internet
 // y guarda las páginas públicas ya vistas para poder mirarlas sin conexión.
-const V = "v1";
+const V = "v2";
 const STATIC = "tc-static-" + V, PAGES = "tc-pages-" + V, FONTS = "tc-fonts-" + V, IMGS = "tc-img-" + V;
 const KEEP = [STATIC, PAGES, FONTS, IMGS];
 const PRECACHE = ["/offline.html", "/vendor/three.min.js", "/icons/icon-192.png"];
@@ -63,7 +63,7 @@ async function revalidar(req, name, max) {
   const c = await caches.open(name);
   const hit = await c.match(req);
   const red = fetch(req).then((res) => { if (res.ok || res.type === "opaque") { c.put(req, res.clone()); if (max) recortar(c, max); } return res; }).catch(() => null);
-  return hit || (await red) || Response.error();
+  return hit || (await red) || fetch(req);
 }
 
 self.addEventListener("fetch", (e) => {

@@ -7,7 +7,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   `img-src 'self' data: blob: ${supa}`,
-  `connect-src 'self' ${supa} ${supa.replace("https://", "wss://")} https://challenges.cloudflare.com`,
+  `connect-src 'self' ${supa} ${supa.replace("https://", "wss://")} https://challenges.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com`,
   "frame-src https://challenges.cloudflare.com",
   "object-src 'none'",
   "base-uri 'self'",
