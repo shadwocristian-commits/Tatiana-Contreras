@@ -1,6 +1,6 @@
 // Servicio de la tienda: muestra una pantalla propia cuando no hay internet
 // y guarda las páginas públicas ya vistas para poder mirarlas sin conexión.
-const V = "v2";
+const V = "v3";
 const STATIC = "tc-static-" + V, PAGES = "tc-pages-" + V, FONTS = "tc-fonts-" + V, IMGS = "tc-img-" + V;
 const KEEP = [STATIC, PAGES, FONTS, IMGS];
 const PRECACHE = ["/offline.html", "/vendor/three.min.js", "/icons/icon-192.png"];
@@ -37,10 +37,16 @@ function conTiempo(p, ms) {
 
 async function navegar(req) {
   const url = new URL(req.url);
+  const publica = pagePublica(url);
+  const guardada = publica ? await caches.match(req.url, { cacheName: PAGES }) : null;
+  const plan = async () => guardada || (await caches.match("/offline.html", { cacheName: STATIC })) || Response.error();
+  // Sin señal: respuesta inmediata, sin esperar.
+  if (self.navigator && self.navigator.onLine === false) return plan();
   try {
-    const res = await conTiempo(fetch(req), 15000);
+    // Señal mala: si tarda mucho, se muestra lo guardado o la pantalla de aviso.
+    const res = await conTiempo(fetch(req), guardada ? 3000 : publica ? 6000 : 12000);
     const tipo = res.headers.get("content-type") || "";
-    if (res.ok && res.type === "basic" && !res.redirected && tipo.includes("text/html") && pagePublica(url)) {
+    if (res.ok && res.type === "basic" && !res.redirected && tipo.includes("text/html") && publica) {
       const c = await caches.open(PAGES);
       await c.delete(req.url);
       await c.put(req.url, res.clone());
@@ -48,8 +54,7 @@ async function navegar(req) {
     }
     return res;
   } catch {
-    const guardada = pagePublica(url) ? await caches.match(req.url, { cacheName: PAGES }) : null;
-    return guardada || (await caches.match("/offline.html", { cacheName: STATIC })) || Response.error();
+    return plan();
   }
 }
 async function cacheFirst(req, name) {
