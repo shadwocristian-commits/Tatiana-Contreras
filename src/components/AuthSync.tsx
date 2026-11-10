@@ -13,6 +13,7 @@ export default function AuthSync() {
     const { data } = sb.auth.onAuthStateChange((event, session) => {
       const now = session?.user?.id ?? null;
       if (uid.current === undefined) { uid.current = now; return; }
+      if (event === "SIGNED_OUT") navigator.serviceWorker?.controller?.postMessage("clear-pages");
       if (event === "SIGNED_OUT" || (event === "SIGNED_IN" && now !== uid.current)) { uid.current = now; router.refresh(); }
     });
     return () => data.subscription.unsubscribe();

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#783818">
+<meta name="robots" content="noindex">
+<title>Materiales de Tatiana</title>
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+:root{--cream:#FBF7EF;--ink:#3B2314;--muted:#6B5444;--line:#EADFCC;--cacao:#783818;--honey:#F0D27A;--honey-l:#FBEBC0;--sage:#A8C890;--coral:#F29C85;--sky:#8CCBE0}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;font-family:'Nunito',ui-rounded,system-ui,sans-serif;color:var(--ink);line-height:1.5;
+background:radial-gradient(900px 560px at 100% 0,rgba(240,210,122,.34),transparent 60%),radial-gradient(800px 560px at 0 38%,rgba(168,200,144,.30),transparent 60%),radial-gradient(800px 520px at 100% 80%,rgba(242,156,133,.16),transparent 60%),var(--cream);
+padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+.a{width:100%;max-width:880px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.art{position:relative;width:min(260px,70vw);aspect-ratio:1/1;flex:none}
+.art canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fb{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+.fb i{display:block;width:62%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF3B8,var(--honey));position:relative;box-shadow:0 14px 0 rgba(120,56,24,.08)}
+.fb i::before,.fb i::after{content:"";position:absolute;top:44%;width:16%;height:8%;border-bottom:4px solid var(--ink);border-radius:0 0 99px 99px}
+.fb i::before{left:22%}.fb i::after{right:22%}
+.nogl .fb{display:flex}
+.t{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:inherit}
+h1{margin:0 0 6px;font-size:1.5rem;line-height:1.2;font-weight:800;text-wrap:balance}
+p{margin:0;color:var(--muted);font-size:1rem;max-width:32ch;text-wrap:balance}
+.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin:16px 0 0;padding:0;list-style:none}
+.tips li{background:var(--honey-l);border-radius:16px;padding:8px 6px;font-size:.78rem;line-height:1.2;text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center}
+.acts{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;font:800 16px 'Nunito',sans-serif;border:2px solid var(--cacao);cursor:pointer;background:var(--cacao);color:#fff;text-decoration:none;white-space:nowrap;width:100%}
+.btn:hover{background:var(--ink);border-color:var(--ink)}
+.btn.s{background:transparent;color:var(--cacao)}.btn.s:hover{background:var(--cacao);color:#fff}
+.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.st{min-height:1.4em;margin-top:10px;font-size:.88rem;font-weight:700;color:var(--cacao)}
+[hidden]{display:none!important}
+@media (min-width:640px){
+ .a{flex-direction:row;text-align:left;gap:36px;justify-content:center}
+ .art{width:min(340px,42vw)}
+ .t{align-items:flex-start;max-width:400px}
+ h1{font-size:1.9rem}
+ .acts{flex-direction:row}.btn{width:auto;flex:1;padding:0 16px}
+}
+@media (max-height:620px) and (max-width:639px){.art{width:min(160px,40vw)}h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<main class="a">
+ <div class="art" id="art" aria-hidden="true"><canvas id="cv"></canvas><div class="fb"><i></i></div></div>
+ <div class="t">
+  <h1>Parece que no hay internet</h1>
+  <p>Tus materiales siguen aquí. Vuelve a intentarlo cuando tengas señal.</p>
+  <ul class="tips"><li>Revisa el wifi</li><li>Prende los datos</li><li>Sal del modo avión</li></ul>
+  <div class="acts">
+   <button class="btn" id="retry" type="button">Reintentar</button>
+   <a class="btn s" id="seen" href="/tienda" hidden>Ver lo que ya abrí</a>
+  </div>
+  <div class="st" id="st" role="status" aria-live="polite"></div>
+ </div>
+</main>
+<script>
+(function(){
+var st=document.getElementById('st'),retry=document.getElementById('retry'),seen=document.getElementById('seen');
+function volver(){location.reload()}
+retry.addEventListener('click',function(){
+  retry.disabled=true;st.textContent='Buscando conexión…';
+  fetch('/icons/icon-192.png?r='+Date.now(),{cache:'no-store'}).then(function(r){if(r.ok)volver();else throw 0}).catch(function(){
+    st.textContent='Todavía no hay conexión. Inténtalo en unos segundos.';retry.disabled=false});
+});
+window.addEventListener('online',volver);
+// Páginas ya vistas en este dispositivo
+if(window.caches){caches.keys().then(function(ks){var k=ks.filter(function(n){return n.indexOf('tc-pages-')===0})[0];if(!k)return;return caches.open(k).then(function(c){return c.keys()}).then(function(rs){
+  if(!rs.length)return;var u=new URL(rs[rs.length-1].url);seen.href=u.pathname+u.search;seen.hidden=false})}).catch(function(){})}
+// Muñeco 3D
+var art=document.getElementById('art'),cv=document.getElementById('cv');
+function plano(){art.classList.add('nogl');cv.style.display='none'}
+function s(src,ok){var e=document.createElement('script');e.src=src;e.onload=ok;e.onerror=plano;document.head.appendChild(e)}
+s('/vendor/three.min.js',function(){
+ var r;try{r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){return plano()}
+ r.setPixelRatio(Math.min(devicePixelRatio||1,2));
+ var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(33,1,.1,100);cam.position.set(0,.8,10);cam.lookAt(0,0,0);
+ sc.add(new THREE.HemisphereLight(0xfff4e0,0xd9c7a8,.95));var dl=new THREE.DirectionalLight(0xffffff,.85);dl.position.set(4,6,5);sc.add(dl);
+ function M(c,q){return new THREE.MeshStandardMaterial({color:c,roughness:q==null?.55:q,metalness:0})}
+ function B(w,h,d,c,q){return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M(c,q))}
+ function S(rad,c,q){return new THREE.Mesh(new THREE.SphereGeometry(rad,36,36),M(c,q))}
+ var g=new THREE.Group();sc.add(g);
+ var book=B(3,.5,2,0xF29C85,.5);book.position.set(0,-1.75,.2);g.add(book);
+ var pg=B(2.8,.36,1.85,0xFBF7EF,.9);pg.position.set(.08,-1.75,.2);g.add(pg);
+ var body=S(1.5,0xF0D27A,.45);body.scale.set(1,.92,.95);body.position.y=-.1;g.add(body);
+ [-.55,.55].forEach(function(x){
+  var eye=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,10,24,Math.PI),M(0x3B2314,.6));eye.rotation.z=Math.PI;eye.position.set(x,.1,1.38);g.add(eye);
+  var ch=S(.22,0xF29C85,.7);ch.scale.set(1,.6,.3);ch.position.set(x*1.55,-.3,1.3);g.add(ch)});
+ var mo=new THREE.Mesh(new THREE.TorusGeometry(.14,.045,10,20,Math.PI),M(0x783818,.6));mo.rotation.z=Math.PI;mo.position.set(0,-.35,1.45);g.add(mo);
+ var cap=new THREE.Mesh(new THREE.SphereGeometry(.5,24,24,0,Math.PI*2,0,Math.PI/2),M(0xA8C890,.6));cap.position.set(.3,1.35,.2);cap.rotation.z=-.25;g.add(cap);
+ var pom=S(.17,0xFFFFFF,.8);pom.position.set(.5,1.9,.2);g.add(pom);
+ var zs=[];[0,1,2].forEach(function(i){var z=new THREE.Mesh(new THREE.TorusGeometry(.12+i*.05,.04,12,24),M(0x8CCBE0,.5));z.position.set(1.7+i*.35,.9+i*.45,.6);g.add(z);zs.push(z)});
+ var sh=new THREE.Mesh(new THREE.CircleGeometry(2.2,40),new THREE.MeshBasicMaterial({color:0x783818,transparent:true,opacity:.10}));sh.rotation.x=-Math.PI/2;sh.position.set(0,-2.05,.2);sc.add(sh);
+ function size(){var w=art.clientWidth,h=art.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+ if(window.ResizeObserver)new ResizeObserver(function(){size();draw(0)}).observe(art);else addEventListener('resize',function(){size();draw(0)});size();
+ var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function draw(t){var k=reduce?0:t/1000;g.rotation.y=Math.sin(k*.5)*.35;body.scale.y=.92+Math.sin(k*1.5)*.025;zs.forEach(function(z,i){z.position.y=.9+i*.45+Math.sin(k*1.8+i)*.08});r.render(sc,cam)}
+ if(reduce){draw(0);return}
+ (function loop(t){if(!document.hidden)draw(t);requestAnimationFrame(loop)})(0);
+});
+})();
+</script>
+</body>
+</html>

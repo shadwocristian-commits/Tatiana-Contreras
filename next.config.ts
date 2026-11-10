@@ -20,7 +20,7 @@ const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   async headers() {
-    return [{
+    return [{ source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, max-age=0" }, { key: "Content-Type", value: "application/javascript; charset=utf-8" }] }, {
       source: "/(.*)",
       headers: [
         { key: "Content-Security-Policy", value: csp },

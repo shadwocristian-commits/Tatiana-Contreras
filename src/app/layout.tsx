@@ -1,5 +1,6 @@
 import AutoClose from "@/components/AutoClose";
 import AuthSync from "@/components/AuthSync";
+import SwRegister from "@/components/SwRegister";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;600;700;800;900&display=swap" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,400..600,0..1&display=swap" />
       </head>
-      <body><AutoClose /><AuthSync />
+      <body><AutoClose /><AuthSync /><SwRegister />
         <Header />
         <main>{children}</main>
         <Footer />
