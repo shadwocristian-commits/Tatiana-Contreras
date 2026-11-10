@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Category, Product } from "@/lib/types";
 import GalleryEditor, { type GItem } from "@/components/GalleryEditor";
 import { pathFromUrl } from "@/lib/img";
+import { Icon } from "@/components/Icons";
 
 type P = Product & { category_id: string | null; is_published: boolean };
 
@@ -34,6 +35,8 @@ export default function ProductForm({ categories, product }: { categories: (Cate
   }, []);
   // Aviso de edición simultánea: avisa si otra persona del equipo está editando este material.
   const [otro, setOtro] = useState("");
+  const [quitar, setQuitar] = useState(false);
+  const [elegido, setElegido] = useState("");
   useEffect(() => {
     if (!product) return;
     const sb = createClient();
@@ -85,9 +88,10 @@ export default function ProductForm({ categories, product }: { categories: (Cate
       if (file.size > 50 * 1024 * 1024) return setError("El archivo pesa más de 50 MB.");
     }
     if (!imgs.length) return setError("Sube la portada del material.");
-    if (f.get("is_published") === "on" && !file?.size && !product?.file_path) return setError("Para publicar necesitas subir el archivo del material.");
+    if (f.get("is_published") === "on" && !file?.size && (!product?.file_path || quitar)) return setError("Para publicar necesitas subir el archivo del material.");
     setBusy(true);
-    let file_path = product?.file_path ?? null;
+    let file_path = quitar ? null : (product?.file_path ?? null);
+    const archivoCambia = quitar || !!(file && file.size > 0);
 
     // Subir imágenes nuevas en paralelo; si alguna falla, se cancela todo sin guardar a medias.
     const fresh = imgs.filter((x) => x.blob);
@@ -133,11 +137,10 @@ export default function ProductForm({ categories, product }: { categories: (Cate
       cover_url,
       gallery,
       gallery_alt: imgs.map((x) => (x.alt ?? "").trim().slice(0, 140)),
-      file_path,
     };
     const { error: err } = product
-      ? await sb.from("products").update(row).eq("id", product.id)
-      : await sb.from("products").insert(row);
+      ? await sb.from("products").update(archivoCambia || !product.file_path ? { ...row, file_path } : row).eq("id", product.id)
+      : await sb.from("products").insert({ ...row, file_path });
     if (err) {
       if (okUp.length) await sb.storage.from("portadas").remove(okUp.map((o) => o.path));
       setBusy(false);
@@ -148,6 +151,7 @@ export default function ProductForm({ categories, product }: { categories: (Cate
     const old = [...(product?.gallery ?? []), ...(product?.cover_url ? [product.cover_url] : [])].filter((u) => !keep.has(u));
     const rm = [...new Set(old.map(pathFromUrl).filter(Boolean) as string[])];
     if (rm.length) await sb.storage.from("portadas").remove(rm);
+    if (product?.file_path && archivoCambia && product.file_path !== file_path) await sb.storage.from("materiales").remove([product.file_path]);
     setBusy(false);
     try { sessionStorage.removeItem(DK); } catch {}
     router.push("/admin/materiales");
@@ -182,7 +186,30 @@ export default function ProductForm({ categories, product }: { categories: (Cate
         {!free && <label className="af">Precio en soles (S/)<input name="price" type="number" min="0" step="0.5" defaultValue={product ? product.price_cents / 100 : ""} /></label>}
       </div>
       <div className="af-row">
-        <label className="af">Archivo del material (PDF, máx. 50 MB){product?.file_path && <small>Archivo actual: {product.file_path}</small>}<input name="file" type="file" accept=".pdf,.zip,application/pdf,application/zip" /></label>
+        <div className="af" style={{ gap: 8 }}>
+          <span>Archivo del material (PDF o ZIP, máx. 50 MB)</span>
+          {product?.file_path && !quitar && !elegido && (
+            <div className="fcard" role="status">
+              <Icon n="check_circle" />
+              <div style={{ minWidth: 0 }}>
+                <b>Archivo guardado</b>
+                <small>{product.file_path.split("/").pop()}</small>
+                <small>Se mantiene al guardar. Solo elige otro si quieres reemplazarlo.</small>
+              </div>
+              <button type="button" className="btn btn-sm" onClick={() => setQuitar(true)}>Quitar</button>
+            </div>
+          )}
+          {quitar && (
+            <div className="fcard warn" role="status">
+              <Icon n="warning" />
+              <div style={{ minWidth: 0 }}><b>El archivo se quitará al guardar</b><small>Podrás subir otro; sin archivo no se puede publicar.</small></div>
+              <button type="button" className="btn btn-sm" onClick={() => setQuitar(false)}>Deshacer</button>
+            </div>
+          )}
+          {elegido && <div className="fcard"><Icon n="upload_file" /><div style={{ minWidth: 0 }}><b>Archivo nuevo elegido</b><small>{elegido}</small></div></div>}
+          <input name="file" type="file" accept=".pdf,.zip,application/pdf,application/zip" onChange={(e) => setElegido(e.target.files?.[0]?.name ?? "")} />
+          {product?.file_path && !quitar && <small>Para reemplazarlo, elige un archivo aquí. Si no eliges nada, se conserva el actual.</small>}
+        </div>
       </div>
       <GalleryEditor items={imgs} setItems={setImgs} title={title} />
       <label className="af-chk"><input type="checkbox" name="is_published" defaultChecked={product?.is_published} /> Publicado (visible en la tienda)</label>

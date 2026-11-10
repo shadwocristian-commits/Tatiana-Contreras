@@ -438,3 +438,5 @@ main:has(>.auth){display:flex}
 
 .card-ok{background:#fff;border:1.5px solid var(--line);border-radius:24px;padding:26px;max-width:640px}.card-ok h2{margin:0 0 8px;font:400 28px 'DM Serif Display',Georgia,serif;color:var(--cacao)}
 @media (max-width:900px){.adm-s a,.adm-s span.off{min-height:0;height:42px}}
+
+.fcard{display:flex;align-items:center;gap:12px;background:#F1F7EC;border:1.5px solid #CFE0C4;border-radius:16px;padding:12px 14px;font-weight:400}.fcard>.ms{color:#4F7A3B;font-size:26px}.fcard b{display:block;font-size:14px;color:var(--ink)}.fcard small{display:block;font-size:12px;color:var(--muted);word-break:break-all}.fcard .btn{margin-left:auto;flex:none}.fcard.warn{background:#FFF3E0;border-color:#F0D2A0}.fcard.warn>.ms{color:#B26A00}
